@@ -1,0 +1,20 @@
+[
+{
+    "name": "GetWeather",
+    "description": "Get current weather",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "DateTime",
+    "description": "Get the date and time",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+}
+]
