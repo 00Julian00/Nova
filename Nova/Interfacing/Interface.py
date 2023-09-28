@@ -7,6 +7,8 @@ import pyaudio
 import sys
 from Levenshtein import distance
 from prompt_toolkit import prompt
+import ctypes
+import time
 
 sys.path.append(os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)), 'NovaEngine'))
 
@@ -98,6 +100,34 @@ def CheckForCloseCommand(command): #Check if an input is close to a command and 
             return
     print("Invalid. Type 'help' to see a list of all available commands")
 
+def Install():
+    # Create a temporary PowerShell script
+    script_content = """
+    Set-ExecutionPolicy Bypass -Scope Process
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    choco install mpv
+    """
+    
+    script_path = os.path.join(os.environ['TEMP'], 'install_choco_and_mpv.ps1')
+    with open(script_path, 'w') as script_file:
+        script_file.write(script_content)
+    
+    # Execute the temporary script with elevated privileges
+    cmd = f"-ExecutionPolicy Bypass -File {script_path}"
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", "powershell", cmd, None, 1) # Run as admin
+
+    time.sleep(5) #Wait a bit so that powershell starts to execute the commands before it deletes the file
+
+    os.remove(script_path)
+
+    #Now install all needed libaries
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "Levenshtein"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "openai"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "elevenlabs"])
+
+    print("\nAll dependencies have been succesfully installed")
 
 def ProcessInput():
     Input = input("> ")
@@ -126,6 +156,9 @@ def ProcessInput():
         return
     elif (Input == "micID"):
         ListMicID()
+    elif (Input == "install"):
+        print("Installing dependencies. This may take a few minutes...")
+        Install()
     else:
         CheckForCloseCommand(Input)
 
@@ -134,7 +167,7 @@ def ProcessInput():
     ProcessInput() #Loop
 
 def PrintHeader():
-    print('Nova Interface (Version Beta 1). Developed by Julian. Type "help" to see a list of all available commands\n')
+    print('Nova Interface (Version 0.1 (alpha)). Developed by Julian. Type "help" to see a list of all available commands\n')
 
 PrintHeader()
 ProcessInput()
