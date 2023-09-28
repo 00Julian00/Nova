@@ -118,10 +118,6 @@ def Install():
     cmd = f"-ExecutionPolicy Bypass -File {script_path}"
     ctypes.windll.shell32.ShellExecuteW(None, "runas", "powershell", cmd, None, 1) # Run as admin
 
-    time.sleep(5) #Wait a bit so that powershell starts to execute the commands before it deletes the file
-
-    os.remove(script_path)
-
     #Now install all needed libaries
     subprocess.check_call([sys.executable, "-m", "pip", "install", "Levenshtein"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "openai"])
