@@ -3,6 +3,7 @@
     "boot": "Start Nova",
     "shutdown": "Stop Nova",
     "reboot": "Reboot Nova",
+    "install": "Automatically install all dependencies",
     "keys": "Edit your API keys. Warning: Will expose your API keys",
     "settings": "Edit your settings",
     "exit": "Exit the Interface. Does not close any instances of Nova running",
