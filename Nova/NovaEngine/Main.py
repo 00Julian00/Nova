@@ -77,7 +77,7 @@ def StartHotwordDetection():
 
 
 def PrintHeader():
-    print("Nova AI Assistant (Version Beta 1). Developed by Julian")
+    print("Nova AI Assistant (Version 0.1 (alpha)). Developed by Julian")
     print("")
     print("Loaded behaviour: " + systemPrompt)
     #Initialize the modules
