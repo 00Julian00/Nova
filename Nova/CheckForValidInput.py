@@ -17,10 +17,10 @@ def CheckForValidInput(setting, input):
         return True
     
     if (setting == "LanguageModel"):
-        pass
+        return True
 
     if (setting == "ElevenlabsModel"):
-        pass
+        return True
 
     if (setting == "ElevenlabsVoiceID"):
         try:
