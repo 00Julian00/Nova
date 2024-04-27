@@ -4,7 +4,7 @@ Requirements:
 - Groq API key (https://groq.com)  
 - Elevenlabs API key (https://elevenlabs.io)  
 - Python (with pip)  
-- Ffmpeg  
+- mpv  
 - CUDA compatible GPU (optional, highly recommended) (CUDA version 12.1+)  
 
 Installation:  
