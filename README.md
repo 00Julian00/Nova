@@ -53,4 +53,4 @@ Settings:
   
   
 Version 0.2:  
-0.2 is a major rewrite of the core system because the code has become very messy, instable, hard to work with and expand. Also the code that was meant to make it easy to add new functionality to Nova paradoxically made everything more complicated then necessary. This is why for 0.2 modules were removed to focus on a good core. They will be reintroduced in 0.3 and they will be a lot easier to make and add to Nova.
+0.2 is a major rewrite of the core system because the code has become very messy, instable, hard to work with and expand. Also the code that was meant to make it easy to add new functionality to Nova ironically made everything more complicated then necessary. This is why for 0.2 modules were removed to focus on a good core. They will be reintroduced in 0.3 and they will be a lot easier to make and add to Nova.
