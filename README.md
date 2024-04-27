@@ -50,3 +50,7 @@ Settings:
 -MicrophoneIndex: The ID of the microphone the system should use. Find a list of the IDs in the main menu under 'micID'.  
 -Behaviour: How the assistant should behave. This is essentially the system prompt. Note that the system prompt is expanded upon in the background for higher output quality. If you want to change that, look under ./Nova/Main.py hiddenSystenPrompt.  
 -Adressation: How the assistant should adress you (for example 'Sir' or your name).  
+
+
+Version 0.2:  
+0.2 is a major rewrite of the core system because the code has become very messy, instable, hard to work with and expand. Also the code that was meant to make it easy to add new functionality to Nova paradoxically made everything more complicated then necessary. This is why for 0.2 modules were removed to focus on a good core. They will be reintroduced in 0.3 and they will be a lot easier to make and add to Nova.
