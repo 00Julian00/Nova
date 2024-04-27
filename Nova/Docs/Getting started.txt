@@ -1,6 +1,0 @@
-1. From \Nova, run StartInterface.py
-2. Type 'install' to install all dependencies. Accept to run powershell as admin and accept all promts during the instalation
-3. Type 'keys' and enter your API keys. You need: OpenAI, Elevenlabs, OpenWeather(optional, is used for the weather module)
-4. Type 'boot' to start Nova
-
-Optional: If you want to use the weather module, install 'geocoder' via pip
