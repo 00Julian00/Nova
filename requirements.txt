@@ -2,7 +2,7 @@ Levenshtein
 groq
 elevenlabs
 pyaudio
-whisper
+-U openai-whisper
 sounddevice
 torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 numpy
