@@ -1,4 +1,5 @@
-Nova personal AI system version 0.2
+Nova personal AI system version 0.2.  
+Nova is an easily expandable AI assistant platform. The core version includes the ability to talk to an LLM, as well as a few primitive menus and customization. Nova is fully open source and easily expandable via modules (note that modules are not yet supported in 0.2). Modules are an easy way to expand Novas capabilities with minimal efford. 
 
 Requirements:  
 - Groq API key (https://groq.com)  
