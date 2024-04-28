@@ -7,6 +7,7 @@ from Levenshtein import distance
 from prompt_toolkit import prompt
 import ConfigInteraction
 from CheckForValidInput import CheckForValidInput
+import shlex
 
 commands = ConfigInteraction.GetInterfaceCommands()
 
@@ -20,13 +21,12 @@ def Help():
         print(name + ": " + description)
 
 def Boot():
-    #Start Main.py as a CMD console. Changes the working directory briefly to the location of Main.py
+    batch_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run.bat")
 
-    script_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Main.py')
-    
-    subprocess.Popen(["cmd", "/c", "start", "cmd", "/k", f"title Nova && python {script_dir}"])
+    subprocess.Popen(['start', 'cmd', '/c', batch_file_path], shell=True)
 
-def Shutdown():
+
+def Shutdown(): #!Bugged. Disabled in the interface.
     subprocess.run('taskkill /F /fi "windowtitle eq Nova  - python*"', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
