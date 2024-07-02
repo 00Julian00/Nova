@@ -14,7 +14,7 @@
 ```bash
 git clone https://github.com/00Julian00/Nova.git
 cd Nova
-pip install -r requirements.txt
+pip install -r requirements.txt --upgrade
 ```
 
 ## Setup

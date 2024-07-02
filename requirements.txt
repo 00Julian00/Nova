@@ -4,7 +4,7 @@ elevenlabs
 pyaudio
 whisper
 sounddevice
-torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+spicy
 numpy
 langcodes
 pyaudio
