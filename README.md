@@ -1,4 +1,4 @@
-# Nova Personal AI System
+# Modular Personal AI Assistant NOVA
 
 **Version 0.2.1**
 
@@ -85,3 +85,10 @@ pip install -r requirements.txt
     - Inital release.
     - Basic vocal interaction using Google STT, OpenAIs Whisper, OpenAIs GPT 3.5 and Elevenlabs multilingual v1.
     - Basic modules.
+
+
+## License
+
+This project is licensed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for details.
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
