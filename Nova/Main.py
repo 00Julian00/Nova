@@ -78,7 +78,7 @@ def ClearConsole():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def PrintHeader():
-    print("Nova AI Assistant (Version 0.2). Developed by Julian")
+    print("Nova AI Assistant (Version 0.2.1). Developed by Julian")
     print("")
     print("Loaded behaviour: " + ConfigInteraction.GetSetting("Behaviour"))
 
