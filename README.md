@@ -59,26 +59,29 @@ pip install -r requirements.txt
 - **Adressation**: How the assistant should address you (e.g., 'Sir' or your name).
 
 
-### Version history
+## Version history
+
 
 #### Version 0.2.1
 
--**Release Date:** 02.07.2024
--**Changes:**
-    -Moved the hotword detection to the Groq API.
+- **Release Date:** 02.07.2024
+- **Changes:**
+    - Moved the hotword detection to the Groq API.
 
 
 ### Version 0.2
--**Release Date:** 27.04.2024
--**Changes:**
-    -Removed modules for rework.
-    -Reworked internal file structure.
-    -Switched from the OpenAI API to the Groq API.
-    -General changes and improvements.
+
+- **Release Date:** 27.04.2024
+- **Changes:**
+    - Removed modules for rework.
+    - Reworked internal file structure.
+    - Switched from the OpenAI API to the Groq API.
+    - General changes and improvements.
 
 ### Version 0.1
--**Release Date:** 27.09.2024
--**Changes:**
-    -Inital release.
-    -Basic vocal interaction using Google STT, OpenAIs Whisper, OpenAIs GPT 3.5 and Elevenlabs multilingual v1.
-    -Basic modules.
+
+- **Release Date:** 27.09.2024
+- **Changes:**
+    - Inital release.
+    - Basic vocal interaction using Google STT, OpenAIs Whisper, OpenAIs GPT 3.5 and Elevenlabs multilingual v1.
+    - Basic modules.
