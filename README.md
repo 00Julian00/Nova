@@ -62,7 +62,7 @@ pip install -r requirements.txt
 ## Version history
 
 
-#### Version 0.2.1
+### Version 0.2.1
 
 - **Release Date:** 02.07.2024
 - **Changes:**
