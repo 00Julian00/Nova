@@ -1,4 +1,4 @@
-# Next-generation Open-source Virtual Assistant NOVA
+# Next-Generation Open-Source Virtual Assistant NOVA
 
 **Version 0.2.1**
 
