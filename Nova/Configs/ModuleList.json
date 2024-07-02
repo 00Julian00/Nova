@@ -1,0 +1,12 @@
+{
+    "DateTime": "GetDateTime",
+    "StoreData": "MemoryModule",
+    "RetrieveData": "MemoryModule",
+    "GetWeather": "WeatherModule",
+    "PlayMusic": "SpotifyModule",
+    "PauseMusic": "SpotifyModule",
+    "SkipTrack": "SpotifyModule",
+    "PlayLastTrack": "SpotifyModule",
+    "PlayTrack": "SpotifyModule",
+    "GetCurrentSong": "SpotifyModule"
+}

@@ -1,0 +1,6 @@
+{
+    "GetDateTime": "True",
+    "MemoryModule": "True",
+    "WeatherModule": "True",
+    "SpotifyModule": "True"
+}

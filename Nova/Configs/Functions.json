@@ -1,0 +1,92 @@
+[
+{
+    "name": "GetWeather",
+    "description": "Get current weather",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "StoreMemory",
+    "description": "Store information that can be accessed later by 'RetrieveMemory'.",
+    "parameters": {
+    "type": "object",
+    "properties": {"information": {"type": "string", "description": "The information you want to store. Longer is better"}},
+    "required": []
+    }
+},
+{
+    "name": "RetriveMemory",
+    "description": "Search for data, via a keyword, that has been 'memorized'. IF you can't find the specific memory, try a range of keywords",
+    "parameters": {
+    "type": "object",
+    "properties": {"keyword": {"type": "string", "description": "The keyword you want to search for"}},
+    "required": []
+    }
+},
+{
+    "name": "DateTime",
+    "description": "Get the date and time",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "PlayMusic",
+    "description": "Starts or resumes playback of the music on spotify",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "PauseMusic",
+    "description": "Pauses playback of the music on spotify",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "SkipTrack",
+    "description": "Skips the current track",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "PlayLastTrack",
+    "description": "Plays the previous song",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+},
+{
+    "name": "PlayTrack",
+    "description": "Plays a specific song",
+    "parameters": {
+    "type": "object",
+    "properties": {"Song name": {"type": "string", "description": "The name of the song that should be played"}},
+    "required": []
+    }
+},
+{
+    "name": "GetCurrentSong",
+    "description": "Get the name of the song that is currently playing",
+    "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+    }
+}
+]

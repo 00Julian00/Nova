@@ -1,0 +1,21 @@
+{
+    "Name": "DebugModule",
+    "Description": "Debug Module",
+
+    "Functions":
+    [
+        {
+            "name": "DebugFunctionName",
+            "description": "DebugFunctionDescription",
+            "parameters":
+            [
+                
+                {
+                    "type": "boolean",
+                    "description": "Debugboolean",
+                    "required": true
+                }
+            ]
+        }
+    ]
+}
