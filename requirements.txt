@@ -4,7 +4,11 @@ elevenlabs
 pyaudio
 whisper
 sounddevice
+<<<<<<< HEAD
 spicy
+=======
+scipy
+>>>>>>> 10b3289bb3e870405418ca4728d277838de45676
 numpy
 langcodes
 pyaudio
