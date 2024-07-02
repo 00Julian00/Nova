@@ -12,22 +12,6 @@ FunctionsPath = os.path.join(script_dir, 'Configs', 'Functions.json')
 ModuleInitializationPath = os.path.join(script_dir, 'Configs', 'HasModuleBeenInitialized.json')
 ManifestPath = os.path.join(os.path.dirname(script_dir), 'manifest.json')
 
-
-def GetKey(key):
-    try:
-        with open(APIkeysPath, 'r') as file:
-            keys = json.load(file)
-            return(keys[key])
-    except Exception as e:
-        print("Failed to fetch API keys\n" + e)
-
-def GetKeys():
-    try:
-        with open(APIkeysPath, 'r') as file:
-            return(json.load(file))
-    except Exception as e:
-        print("Failed to fetch API keys\n" + e)
-
 def GetSetting(setting):
     try:
         with open(SettingsPath, 'r') as file:
@@ -49,10 +33,6 @@ def GetInterfaceCommands():
             return(json.load(file))
     except Exception as e:
         print("Failed to fetch interface commands\n" + e)
-
-def SetKeys(keys):
-    with open(APIkeysPath, 'w') as file:
-        file.write(json.dumps(keys, indent=4))
 
 def SetSettings(settings):
     with open(SettingsPath, 'w') as file:

@@ -2,8 +2,9 @@ from groq import Groq
 import json
 import os
 import ConfigInteraction
+from KeyManager import GetKey
 
-client = Groq(api_key=ConfigInteraction.GetKey("Groq"))
+client = Groq(api_key=GetKey("Groq"))
 
 model = ConfigInteraction.GetSetting("LanguageModel")
 

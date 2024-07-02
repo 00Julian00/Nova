@@ -9,3 +9,4 @@ numpy
 langcodes
 pyaudio
 prompt-toolkit
+keyring

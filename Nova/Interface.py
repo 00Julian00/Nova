@@ -7,6 +7,7 @@ from Levenshtein import distance
 from prompt_toolkit import prompt
 import ConfigInteraction
 from CheckForValidInput import CheckForValidInput
+from KeyManager import GetKey, SetKey, GetKeyList
 
 commands = ConfigInteraction.GetInterfaceCommands()
 version = ConfigInteraction.GetManifest()["version"]
@@ -41,48 +42,42 @@ def EditAPIkeys():
     elif (confirm != "y"):
         print("Invalid. Canceling...")
         return
-    
-    try:
-        keys = ConfigInteraction.GetKeys()
-    except:
-        print("Unable to access the API keys file.")
-        return
+
     
     while True:
-        #List the settings
+        #List the keys
         PrintHeader()
-        settingID = 1
-        names = []
-        values = []
-        for name, value in keys.items():
-            print(str(settingID) + ". ", name + " | ", value)
-            settingID += 1
-            names.append(name)
-            values.append(value)
+        for id in GetKeyList():
+            if (GetKey(GetKeyList()[id]) == None):
+                SetKey(GetKeyList()[id], "")
+            
+            print(id + ". " + GetKeyList()[id] + " | ", GetKey(GetKeyList()[id]))
         
-        chosenKeys = input("\nChoose key to edit by typing the number. Press enter to save.\n> ")
+        chosenKey = input("\nChoose key to edit by typing the number. Press enter to save.\n> ")
 
-        #Save the settings and exit the settings menu
-        if (chosenKeys == ""):
-            ConfigInteraction.SetKeys(keys)
+        #Save the keys and exit the settings menu
+        if (chosenKey == ""):
             PrintHeader()
             return
         
         #Check the input for validity
         try:
-            chosenKeys = int(chosenKeys)
+            int(chosenKey)
         except:
             print("Invalid input. Type the number of the key you want to edit or press enter to save.")
             continue
 
-        if (chosenKeys < 1 or chosenKeys > len(keys)):
+        if (int(chosenKey) < 1 or int(chosenKey) > len(GetKeyList())):
             print("Invalid input. Type the number of the key you want to edit or press enter to save.")
             continue
         
+        chosenKey = str(chosenKey)
+
         #Edit the setting
         PrintHeader()
         print("\nType the new value and press enter to save. Press enter to keep the current value:")
-        keys[names[chosenKeys - 1]] = prompt(names[chosenKeys - 1] + " | ", default = keys[names[chosenKeys - 1]])
+
+        SetKey(GetKeyList()[chosenKey], prompt(f"{GetKeyList()[chosenKey]} | ", default = GetKey(GetKeyList()[chosenKey])))
         ClearConsole()
 
 def Settings():

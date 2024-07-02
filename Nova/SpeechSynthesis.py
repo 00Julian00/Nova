@@ -1,12 +1,13 @@
 from elevenlabs.client import ElevenLabs
 from elevenlabs import stream, play, Voice, VoiceSettings
 import ConfigInteraction
+from KeyManager import GetKey
 
 voiceID = ConfigInteraction.GetSetting("ElevenlabsVoiceID")
 
 model = ConfigInteraction.GetSetting("ElevenlabsModel")
 
-client = ElevenLabs(api_key=ConfigInteraction.GetKey("Elevenlabs"))
+client = ElevenLabs(api_key=GetKey("Elevenlabs"))
 
 streamVoice = ConfigInteraction.GetSetting("StreamVoice")
 

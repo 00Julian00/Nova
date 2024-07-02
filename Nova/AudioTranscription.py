@@ -6,12 +6,13 @@ from Levenshtein import distance
 from groq import Groq
 from scipy.io import wavfile
 import ConfigInteraction
+from KeyManager import GetKey
 
 micIndex = int(ConfigInteraction.GetSetting("MicrophoneIndex"))
 hotword = ConfigInteraction.GetSetting("Hotword")
 language = ConfigInteraction.GetSetting("Language")
 
-client = Groq(api_key=ConfigInteraction.GetKey("Groq"))
+client = Groq(api_key=GetKey("Groq"))
 model = "whisper-large-v3"
 
 # Audio settings

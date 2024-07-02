@@ -2,8 +2,9 @@
 from langcodes import Language
 from elevenlabs.client import ElevenLabs
 import ConfigInteraction
+from KeyManager import GetKey
 
-client = ElevenLabs(api_key=ConfigInteraction.GetKey("Elevenlabs"))
+client = ElevenLabs(api_key=GetKey("Elevenlabs"))
 
 def CheckForValidInput(setting, input):
     if (setting == "Language"):

@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 0.2.1**
+**Version 0.2.2**
 
 ## Requirements
 
@@ -60,6 +60,12 @@ pip install -r requirements.txt
 
 
 ## Version history
+
+### Version 0.2.2
+
+- **Release Date:** 02.07.2024
+- **Changes:**
+    - Changed how the API keys are stored to the "keyring" libary. It is no more possible to find the API keys in the source files.
 
 
 ### Version 0.2.1
