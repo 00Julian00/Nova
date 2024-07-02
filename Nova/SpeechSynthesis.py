@@ -4,30 +4,11 @@ import ConfigInteraction
 from KeyManager import GetKey
 
 voiceID = ConfigInteraction.GetSetting("ElevenlabsVoiceID")
-
 model = ConfigInteraction.GetSetting("ElevenlabsModel")
-
 client = ElevenLabs(api_key=GetKey("Elevenlabs"))
-
 streamVoice = ConfigInteraction.GetSetting("StreamVoice")
 
-Textfull = ""
-
-def Generator(response):
-    global Textfull
-    
-    for event in response:
-        if (event.choices[0].delta.content != None):
-            Textfull += event.choices[0].delta.content
-            yield(event.choices[0].delta.content)
-        else:
-            yield("")
-
-def TTS(response):        
-    global Textfull
-    Textfull = ""
-    
-    generator = Generator(response)
+def TTS(generator):        
     
     audio_stream = client.generate(
         text = generator,
@@ -43,7 +24,3 @@ def TTS(response):
         stream(audio_stream)
     else:
         play(audio_stream)
-
-    print("Response: " + Textfull + "\n")
-
-    return(Textfull)

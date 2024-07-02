@@ -2,7 +2,7 @@
 
 from AudioTranscription import DetectHotword
 from SpeechSynthesis import TTS
-from LanguageModelInteraction import PromptLanguageModel
+from LanguageModelInteraction import PromptLanguageModel, LLMStreamProcessor
 import ConfigInteraction
 import requests
 import os
@@ -37,14 +37,20 @@ def AddToConversation(type, content, functionName, PromptLanguageModel):
 def CallLanguageModel():
     #Call GPT. It is put into a try-except block to cath potential errors when calling the API.    
     try:
-        GPTresponse = PromptLanguageModel(conversation)
+        LLMresponse = PromptLanguageModel(conversation)
     except Exception as e:
         print("An error occured when communicating with the Groq API:\n" + str(e))
         return
     
-    GPTaddToConvo = TTS(GPTresponse) #Sends the stream to the TTS, which also extracts the text which then gets added to the conversation
+    processor = LLMStreamProcessor()
 
-    AddToConversation(1, GPTaddToConvo, None, False)
+    TTS(processor.ExtractData(LLMresponse))
+
+    response, function_calls = processor.GetData()
+
+    print("Response: " + response)
+
+    AddToConversation(1, response, None, False)
 
 
 def StartHotwordDetection():
