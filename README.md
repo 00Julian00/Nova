@@ -6,8 +6,8 @@
 
 - [Groq API key](https://groq.com)
 - [Elevenlabs API key](https://elevenlabs.io)
-- [Python] (https://www.python.org)
-- [mpv] (https://mpv.io)
+- [Python](https://www.python.org)
+- [mpv](https://mpv.io)
 
 ## Installation
 
