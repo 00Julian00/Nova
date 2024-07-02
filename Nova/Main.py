@@ -2,7 +2,7 @@
 
 from AudioTranscription import DetectHotword
 from SpeechSynthesis import TTS
-from GPTinteraction import CallGPT, ExtractArguments
+from LanguageModelInteraction import PromptLanguageModel
 import ConfigInteraction
 import requests
 import os
@@ -14,13 +14,13 @@ adressation = ConfigInteraction.GetSetting("Adressation")
 language = ConfigInteraction.GetSetting("Language")
 version = ConfigInteraction.GetManifest()["version"]
 
-hiddenSystemPromt = f"Keep your answers as short as possible. Always use the metric system. Never use the imperial system. Adress the user as {adressation} if necessary. Speak in the following language: {language}. Never make up information. If you do not know a piece of information, attempt to find out the information. If that is not possible, admit that you do not know the information. If asked to calculate something, do not provide the calculation, just provide the answer. Do not use special characters, like '-', '/' etc."
+hiddenSystemPromt = f"Keep your answers as short as possible. Always use the metric system. Never use the imperial system. Adress the user as {adressation} where applicable. Speak in the following language: {language}. Never make up information. If you do not know a piece of information, attempt to find out the information. If that is not possible, admit that you do not know the information. If asked to calculate something, do not provide the calculation, just provide the answer. Do not use special characters, like '-', '/' etc."
 
 systemPrompt = ConfigInteraction.GetSetting("Behaviour") + " " + hiddenSystemPromt
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-def AddToConversation(type, content, functionName, callGPT):
+def AddToConversation(type, content, functionName, PromptLanguageModel):
     if(type == 0): #User
         conversation.append({"role": "user", "content": content})
     elif(type == 1): #AI
@@ -30,19 +30,19 @@ def AddToConversation(type, content, functionName, callGPT):
     elif(type == 3): #System
         conversation.append({"role": "system", "content": content})
 
-    if(callGPT):
-        InteractWithGPT()
+    if(PromptLanguageModel):
+        CallLanguageModel()
 
 
-def InteractWithGPT():
+def CallLanguageModel():
     #Call GPT. It is put into a try-except block to cath potential errors when calling the API.    
     try:
-        GPTresponse = CallGPT(conversation)
+        GPTresponse = PromptLanguageModel(conversation)
     except Exception as e:
-        print("An error occured when communicating with GPT:\n" + str(e))
+        print("An error occured when communicating with the Groq API:\n" + str(e))
         return
     
-    GPTaddToConvo = TTS(GPTresponse) #Sends the stream to the TTS, which also extracts the text which then get's added to the conversation
+    GPTaddToConvo = TTS(GPTresponse) #Sends the stream to the TTS, which also extracts the text which then gets added to the conversation
 
     AddToConversation(1, GPTaddToConvo, None, False)
 
