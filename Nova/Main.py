@@ -94,14 +94,14 @@ def Initialize():
         print("Failed to connect to Groq. Please check your internet connection.")
         exit()
 
-    AddToConversation(3, systemPrompt, None, False)
-    print("> Initialized Language Model.")
-
     if (PingElevenlabs()):
         print("> Connection to Elevenlabs successful.")
     else:
         print("Failed to connect to Elevenlabs. Please check your internet connection.")
         exit()
+
+    AddToConversation(3, systemPrompt, None, False)
+    print("> Initialized Language Model.")
 
     ClearConsole()
     PrintHeader()

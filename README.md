@@ -1,4 +1,4 @@
-# Modular Personal AI Assistant NOVA
+# Next-generation Open-source Virtual Assistant NOVA
 
 **Version 0.2.1**
 
@@ -6,8 +6,8 @@
 
 - [Groq API key](https://groq.com)
 - [Elevenlabs API key](https://elevenlabs.io)
-- Python (with pip)
-- mpv
+- [Python] (https://www.python.org)
+- [mpv] (https://mpv.io)
 
 ## Installation
 
