@@ -5,8 +5,6 @@ import time as time_module
 from Levenshtein import distance
 from groq import Groq
 from scipy.io import wavfile
-
-# Assuming ConfigInteraction is a custom module you're using
 import ConfigInteraction
 
 micIndex = int(ConfigInteraction.GetSetting("MicrophoneIndex"))

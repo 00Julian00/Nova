@@ -12,6 +12,7 @@ conversation = []
 
 adressation = ConfigInteraction.GetSetting("Adressation")
 language = ConfigInteraction.GetSetting("Language")
+version = ConfigInteraction.GetManifest()["version"]
 
 hiddenSystemPromt = f"Keep your answers as short as possible. Always use the metric system. Never use the imperial system. Adress the user as {adressation} if necessary. Speak in the following language: {language}. Never make up information. If you do not know a piece of information, attempt to find out the information. If that is not possible, admit that you do not know the information. If asked to calculate something, do not provide the calculation, just provide the answer. Do not use special characters, like '-', '/' etc."
 
@@ -78,7 +79,7 @@ def ClearConsole():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def PrintHeader():
-    print("Nova AI Assistant (Version 0.2.1). Developed by Julian")
+    print(f"Nova AI Assistant (Version {version}). Developed by Julian")
     print("")
     print("Loaded behaviour: " + ConfigInteraction.GetSetting("Behaviour"))
 
