@@ -74,6 +74,13 @@ pip install -r requirements.txt --upgrade
 
 ## Version history
 
+### Version 1.0
+
+- **Release Date:** 03.07.2024
+- **Changes:**
+    - Added 'Modules' to easily add more functionality to NOVA.
+    - Created a [guide](https://github.com/00Julian00/Nova-Devtools.git) for Module development.
+
 ### Version 0.2.2
 
 - **Release Date:** 02.07.2024
@@ -99,7 +106,7 @@ pip install -r requirements.txt --upgrade
 
 ### Version 0.1
 
-- **Release Date:** 27.09.2024
+- **Release Date:** 27.09.2023
 - **Changes:**
     - Inital release.
     - Basic vocal interaction using Google STT, OpenAIs Whisper, OpenAIs GPT 3.5 and Elevenlabs multilingual v1.
