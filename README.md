@@ -1,6 +1,19 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 0.2.2**
+**Version 1.0**
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Requirements](#requirements)
+- [Installation](#installation)
+    - [Setup](#setup)
+    - [Run](#run)
+- [Main Menu Commands](#main-menu-commands)
+- [Settings](#settings)
+- [Version History](#version-history)
+
+## Introduction
+The Next-Generation Open-Source Virtual Assistant (or NOVA) is an easily expandable and modifyable virtual assistant. It uses the [Groq API](https://groq.com) for the text transcription, as well as the processing of the query, making it fast and responsive. NOVA uses the [Elevenlabs API](https://elevenlabs.io) for rich and natural speech. NOVA can be easily expanded, using Modules. Modules can add extra functionality to the system, are modular and can be easily developed. See [here](https://github.com/00Julian00/Nova-Devtools.git) for further resources on Module development. NOVA is still under development.
 
 ## Requirements
 
@@ -55,8 +68,8 @@ pip install -r requirements.txt --upgrade
 - **ElevenlabsVoiceID**: The ID of the voice you want to use. You can find the IDs of the premade voices and your own voices on [Elevenlabs](https://elevenlabs.io).
 - **StreamVoice (True/False)**: Do you want to stream the voice? Streaming is generally a lot faster but can lead to buffering, especially if you are not using a turbo model.
 - **MicrophoneIndex**: The ID of the microphone the system should use. Find a list of the IDs in the main menu under `micID`.
-- **Behaviour**: How the assistant should behave. This is essentially the system prompt. Note that the system prompt is expanded upon in the background for higher output quality. If you want to change that, look under `./Nova/Main.py hiddenSystemPrompt`.
-- **Adressation**: How the assistant should address you (e.g., 'Sir' or your name).
+- **Behaviour**: How the assistant should behave.
+- **Name**: How the assistant should call you, i.e. your name.
 
 
 ## Version history

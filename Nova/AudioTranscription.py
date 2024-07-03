@@ -84,7 +84,7 @@ def listen():
 
     return transcription
 
-max_distance = 2
+max_distance = 0
 def DetectHotword():
     global hotword, max_distance
     
@@ -105,9 +105,6 @@ def DetectHotword():
 
 # Main execution
 if __name__ == "__main__":
-    print("Listening for hotword...")
     result = DetectHotword()
     if result:
-        print(f"Hotword detected! Transcription: {result}")
-    else:
-        print("No hotword detected.")
+        print(f"User: {result}")

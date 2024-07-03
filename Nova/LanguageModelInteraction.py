@@ -3,31 +3,16 @@ import json
 import os
 import ConfigInteraction
 from KeyManager import GetKey
+import ModuleManager
 
 client = Groq(api_key=GetKey("Groq"))
 model = ConfigInteraction.GetSetting("LanguageModel")
-
-debugTools = [
-        {
-            "type": "function",
-            "function": {
-                "name": "get_weather",
-                "description": "Get the current weather",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                    },
-                    "required": [],
-                },
-            },
-        }
-    ]
 
 
 def PromptLanguageModel(Input):
     response = client.chat.completions.create(
     model=model,
-    tools=debugTools,
+    tools=ModuleManager.GetModules(),
     messages=Input,
     stream=True)
 
