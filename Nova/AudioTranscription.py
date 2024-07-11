@@ -2,36 +2,56 @@ import os
 import numpy as np
 import sounddevice as sd
 import time as time_module
-from Levenshtein import distance
 from groq import Groq
 from scipy.io import wavfile
 import ConfigInteraction
 from KeyManager import GetKey
+from faster_whisper import WhisperModel
+import torch
+import torchaudio
 
 micIndex = int(ConfigInteraction.GetSetting("MicrophoneIndex"))
 hotword = ConfigInteraction.GetSetting("Hotword")
 language = ConfigInteraction.GetSetting("Language")
+offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-client = Groq(api_key=GetKey("Groq"))
-model = "whisper-large-v3"
+if (offlineMode == "False"):
+    client = Groq(api_key=GetKey("Groq"))
+    model = "whisper-large-v3"
+else:
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'  # Required for running on Windows
+    fasterWhisperModel = WhisperModel("distil-large-v3", device="cuda", compute_type="float16")
+
+vadModel, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad', model='silero_vad', trust_repo=True)
+(get_speech_ts, _, read_audio, VADIterator, collect_chunks) = utils
 
 # Audio settings
 sample_rate = 16000  # Sample rate in Hz
 silence_duration_threshold = 1  # Seconds of silence before processing
+start_threshold = 0.003
+end_threshold = 0.003 
 
-# Audio level thresholds
-start_threshold = 0.003  # Threshold to start recording
-end_threshold = 0.003  # Threshold to end recording
 
-# Normalize audio data from int16 to range -1.0 to 1.0
-def normalize_audio(audio):
-    return audio / 32768.0
+def ProcessAPI(temp_file):
+    with open(temp_file, "rb") as file:
+        result = client.audio.transcriptions.create(
+            file=(temp_file, file.read()),
+            model=model,
+            response_format="json",
+            language=language
+        )
 
-# For RMS calculation
-def calculate_rms(audio):
-    return np.sqrt(np.mean(audio**2))
+    return result.text
 
-def listen():
+def ProcessLocal(temp_file):
+    fulltext = ""
+    segments, info = fasterWhisperModel.transcribe(temp_file, beam_size=5, language="en", condition_on_previous_text=False)
+    for segment in segments:
+        fulltext += segment.text
+    return fulltext
+
+
+def Listen():
     global is_recording, silence_start, audio_buffer, transcription
     audio_buffer = np.array([], dtype=np.int16)
     is_recording = False
@@ -41,8 +61,8 @@ def listen():
     def callback(indata, frames, time_info, status):
         global audio_buffer, is_recording, silence_start, transcription
         audio = np.frombuffer(indata, dtype=np.int16)
-        normalized_audio = normalize_audio(audio.astype(np.float32))
-        rms = calculate_rms(normalized_audio)
+        normalized_audio = audio.astype(np.float32) / 32768.0
+        rms = np.sqrt(np.mean(normalized_audio**2))
 
         # Start recording when the audio level exceeds the start threshold
         if not is_recording and rms > start_threshold:
@@ -61,15 +81,17 @@ def listen():
                     # Process the accumulated audio
                     temp_file = "temp_audio.wav"
                     wavfile.write(temp_file, sample_rate, audio_buffer)
-                    
-                    with open(temp_file, "rb") as file:
-                        result = client.audio.transcriptions.create(
-                            file=(temp_file, file.read()),
-                            model=model,
-                            response_format="json",
-                            language=language
-                        )
-                    transcription = result.text
+
+                    #Check if the audio contains speech
+                    if (len(get_speech_ts(read_audio(temp_file), vadModel)) > 0):
+                        if (offlineMode == "False"):
+                            transcription = ProcessAPI(temp_file)
+                        else:
+                            transcription = ProcessLocal(temp_file)
+                    else:
+                        transcription = ""
+
+
                     os.remove(temp_file)  # Clean up temporary file
                     
                     # Signal to stop the audio input stream
@@ -79,32 +101,17 @@ def listen():
                 silence_start = None  # Reset silence start time as there is ongoing noise
 
     with sd.InputStream(callback=callback, dtype=np.int16, channels=1, samplerate=sample_rate, device=micIndex):
-        while transcription is None:
-            sd.sleep(100)  # Wait a short time and check again
+        while transcription is None: #Wait for the audio to be processed
+            sd.sleep(1)
 
     return transcription
 
-max_distance = 0
 def DetectHotword():
-    global hotword, max_distance
+    global hotword
     
-    #Check how much every word in the description deviates from the hotword. If it is close enough, it will be counted
-    transcription = listen()
+    transcription = Listen()
 
-    words = transcription.lower().split()
-    hotword = hotword.lower()
-    for i, word in enumerate(words):
-        if distance(word, hotword) <= max_distance:
-            words[i] = hotword  # replace with the actual hotword
-    finalized = ' '.join(words)  # join the words back into a string
-
-    if hotword in finalized:
-        return finalized
+    if hotword in transcription:
+        return transcription
     else:
         return None
-
-# Main execution
-if __name__ == "__main__":
-    result = DetectHotword()
-    if result:
-        print(f"User: {result}")

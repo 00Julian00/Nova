@@ -1,16 +1,21 @@
+setuptools
+wheel
 Levenshtein
 groq
 elevenlabs
 pyaudio
-whisper
+faster-whisper
 sounddevice
-<<<<<<< HEAD
 spicy
-=======
-scipy
->>>>>>> 10b3289bb3e870405418ca4728d277838de45676
 numpy
 langcodes
-pyaudio
-prompt-toolkit
+prompt_toolkit
 keyring
+silero-vad
+platformdirs
+colorama
+packaging
+transformers
+pyaudio
+accelerate
+TTS

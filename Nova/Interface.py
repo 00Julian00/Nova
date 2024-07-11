@@ -22,9 +22,11 @@ def Help():
         print(name + ": " + description)
 
 def Boot():
-    batch_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run.bat")
+    corePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Core.py")
+    corePath = '"' + corePath + '"'
+    command = f'start cmd /c title Nova ^& python {corePath}'
 
-    subprocess.Popen(['start', 'cmd', '/c', batch_file_path], shell=True)
+    process = subprocess.Popen(command, shell=True)
 
 
 def Shutdown(): #!Bugged. Disabled in the interface.

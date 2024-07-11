@@ -4,12 +4,40 @@ import os
 import ConfigInteraction
 from KeyManager import GetKey
 import ModuleManager
+import torch 
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from Helpers import suppress_output_decorator, suppress_output
 
-client = Groq(api_key=GetKey("Groq"))
-model = ConfigInteraction.GetSetting("LanguageModel")
+offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
+with suppress_output():
+    if (offlineMode == "False"):
+        client = Groq(api_key=GetKey("Groq"))
+        model = ConfigInteraction.GetSetting("GroqModel")
+    else:
+        os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = 'True'
+        torch.random.manual_seed(0) 
+        model = AutoModelForCausalLM.from_pretrained( 
+            "microsoft/Phi-3-mini-128k-instruct",  
+            device_map="cuda",  
+            torch_dtype="auto",  
+            trust_remote_code=True,  
+        )
 
-def PromptLanguageModel(Input):
+        pipe = pipeline( 
+            "text-generation", 
+            model=model, 
+            tokenizer=AutoTokenizer.from_pretrained("failspy/Phi-3-mini-128k-instruct-abliterated-v3"), 
+        ) 
+
+        generation_args = { 
+            "max_new_tokens": 512, 
+            "return_full_text": False, 
+            "temperature": 0.0, 
+            "do_sample": False, 
+        }
+
+def PromptLanguageModelAPI(Input):
     response = client.chat.completions.create(
     model=model,
     tools=ModuleManager.GetModules(),
@@ -17,6 +45,12 @@ def PromptLanguageModel(Input):
     stream=True)
 
     return(response)
+
+@suppress_output_decorator
+def PromptLanguageModelLocal(Input):
+    output = pipe(Input, **generation_args) 
+    
+    return(output)
 
 class LLMStreamProcessor:
     def __init__(self):

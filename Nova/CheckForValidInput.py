@@ -17,7 +17,7 @@ def CheckForValidInput(setting, input):
     if (setting == "Hotword"):
         return True
     
-    if (setting == "LanguageModel"):
+    if (setting == "GroqModel"):
         return True
 
     if (setting == "ElevenlabsModel"):
@@ -29,6 +29,12 @@ def CheckForValidInput(setting, input):
             return True
         except:
             return "Invalid input. Must be a valid voice ID. Visit https://elevenlabs.io to find a valid voice and its ID."
+
+    if (setting == "OfflineMode"):
+        if (input == "True" or input == "False"):
+            return True
+        else:
+            return "Invalid input. Must be 'True' or 'False'"
 
     if (setting == "StreamVoice"):
         if (input == "True" or input == "False"):
@@ -46,5 +52,5 @@ def CheckForValidInput(setting, input):
     if (setting == "Behaviour"):
         return True
     
-    if (setting == "Adressation"):
+    if (setting == "Name"):
         return True

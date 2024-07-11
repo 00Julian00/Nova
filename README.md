@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 1.0**
+**Version 1.1**
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -19,15 +19,19 @@ The Next-Generation Open-Source Virtual Assistant (or NOVA) is an easily expanda
 
 - [Groq API key](https://groq.com)
 - [Elevenlabs API key](https://elevenlabs.io)
-- [Python](https://www.python.org)
+- [Python 3.11.x with PIP](https://www.python.org)
 - [mpv](https://mpv.io)
+- [ffmpeg](https://ffmpeg.org/download.html)
+- [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/de/visual-cpp-build-tools/)
+- [Cuda 12.1](https://developer.nvidia.com/cuda-12-1-0-download-archive)
 
 ## Installation
 
 ```bash
 git clone https://github.com/00Julian00/Nova.git
 cd Nova
-pip install -r requirements.txt --upgrade
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install -r requirements.txt
 ```
 
 ## Setup
@@ -66,6 +70,7 @@ pip install -r requirements.txt --upgrade
 - **LanguageModel**: The LLM that should be used. Note that it is not possible to check whether your chosen model is valid, so choose a valid model. [Groq Models](https://console.groq.com/docs/models)
 - **ElevenlabsModel**: The voice model that should be used for the Text-To-Speech. Note that it is not possible to check whether your chosen model is valid, so choose a valid model. [Elevenlabs Models](https://elevenlabs.io/docs/speech-synthesis/models)
 - **ElevenlabsVoiceID**: The ID of the voice you want to use. You can find the IDs of the premade voices and your own voices on [Elevenlabs](https://elevenlabs.io).
+- **OfflineMode (True/False)**: Run all required AI models on local hardware. No internet connection is needed, apart from first downloading the models. Switch off Offline Mode for better response times and higher quality.
 - **StreamVoice (True/False)**: Do you want to stream the voice? Streaming is generally a lot faster but can lead to buffering, especially if you are not using a turbo model.
 - **MicrophoneIndex**: The ID of the microphone the system should use. Find a list of the IDs in the main menu under `micID`.
 - **Behaviour**: How the assistant should behave.
@@ -73,6 +78,12 @@ pip install -r requirements.txt --upgrade
 
 
 ## Version history
+
+### Version 1.1
+
+- **Release Date:** 11.07.2024
+- **Changes:**
+    - Added an Offline Mode which will run all AI models locally, eliminating the need for API keys or an internet connection. The Offline mode uses Faster-Whisper, Phi-3 128k and Coqui TTS.
 
 ### Version 1.0
 

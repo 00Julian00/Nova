@@ -1,14 +1,15 @@
 #Ths script connects all the different scripts in the Nova engine
 
 from AudioTranscription import DetectHotword
-from SpeechSynthesis import TTS
-from LanguageModelInteraction import PromptLanguageModel, LLMStreamProcessor
+from SpeechSynthesis import SpeakStream, SpeakDirect, SpeakOffline
+from LanguageModelInteraction import PromptLanguageModelAPI, PromptLanguageModelLocal, LLMStreamProcessor
 import ConfigInteraction
 import requests
 import os
 import ModuleManager
 import json
 from datetime import datetime
+from Helpers import suppress_output_decorator, suppress_output
 
 #This is the array that stores the entire conversation
 conversation = []
@@ -16,8 +17,9 @@ conversation = []
 userName = ConfigInteraction.GetSetting("Name")
 language = ConfigInteraction.GetSetting("Language")
 version = ConfigInteraction.GetManifest()["version"]
+offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-hiddenSystemPromt = f"Keep your answers as short as possible. Always use the metric system. Use the date format dd.mm.yyyy. Only mention the date and time if specifically asked to do so. Speak in the following language: {language}. Never make up information. Never promise an alternative solution if a module fails to execute. Do not use special characters, like '-', '/' etc."
+hiddenSystemPromt = f"You keep your answers as short as possible. You always use the metric system. You use the date format dd.mm.yyyy. You only mention the date and time if specifically asked to do so. You speak in the following language: {language}. You never make up information. You never promise an alternative solution if a module fails to execute. You do not use special characters, like '-', '/' etc."
 
 systemPrompt = ConfigInteraction.GetSetting("Behaviour") + " " + hiddenSystemPromt
 
@@ -42,16 +44,27 @@ def CallLanguageModel():
         conversationWithInfo = conversation.copy()
         conversationWithInfo.append({"role": "system", "content": "The date is " + datetime.now().strftime("%d/%m/%Y") + " The time is " + datetime.now().strftime("%H:%M")})
         conversationWithInfo.append({"role": "system", "content": f"The name of the user is {userName}."})
-        LLMresponse = PromptLanguageModel(conversationWithInfo)
+        
+        with suppress_output():
+            if (offlineMode == "False"):
+                LLMresponse = PromptLanguageModelAPI(conversationWithInfo)
+            else:
+                LLMresponse = PromptLanguageModelLocal(conversationWithInfo)
+
     except Exception as e:
         print("An error occured when communicating with the Groq API:\n" + str(e))
         return
     
     processor = LLMStreamProcessor()
 
-    TTS(processor.ExtractData(LLMresponse))
+    if (offlineMode == "False"):
+        SpeakStream(processor.ExtractData(LLMresponse))
+        response, function_calls = processor.GetData()
+    else:
+        response = LLMresponse[0]['generated_text']
+        function_calls = []
+        SpeakOffline(response)
 
-    response, function_calls = processor.GetData()
 
     for call in function_calls:
         if (str(call.function.arguments) == "{}"):
@@ -124,17 +137,18 @@ def PrintHeader():
 def Initialize():
     print("> Booting...")
 
-    if (PingGroq()):
-        print("> Connection to Groq successful.")
-    else:
-        print("Failed to connect to Groq. Please check your internet connection.")
-        exit()
+    if (ConfigInteraction.GetSetting("OfflineMode") == "False"): #TODO: Switch to offline if APIs can't be reached or an API key is missing
+        if (PingGroq()):
+            print("> Connection to Groq successful.")
+        else:
+            print("Failed to connect to Groq. Please check your internet connection.")
+            exit()
 
-    if (PingElevenlabs()):
-        print("> Connection to Elevenlabs successful.")
-    else:
-        print("Failed to connect to Elevenlabs. Please check your internet connection.")
-        exit()
+        if (PingElevenlabs()):
+            print("> Connection to Elevenlabs successful.")
+        else:
+            print("Failed to connect to Elevenlabs. Please check your internet connection.")
+            exit()
 
     AddToConversation(3, systemPrompt, None, False)
     print("> Initialized Language Model.")
