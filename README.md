@@ -131,7 +131,7 @@ pip install -r requirements.txt
 
 
 ### ⚠️SECURITY WARNING
-# When using modules created by third parties, please exercise caution:
+#### When using modules created by third parties, please exercise caution:
 
 1. Always review the code: Thoroughly examine any third-party module before running it. This is crucial for ensuring its safety and understanding its functionality.
 2. Limited protection: While Nova attempts to restrict access to sensitive libraries, this does not guarantee complete security. Determined actors may find ways to circumvent these restrictions.
@@ -139,7 +139,7 @@ pip install -r requirements.txt
 4. Keep updated: Regularly update Nova to have the best possible protection against threats and bad actors.
 5. Report suspicions: If you encounter a module that seems malicious or insecure, please report it to the Nova community.
 
-## Remember: The safety of your system ultimately depends on your vigilance. Nova's security features are a supplement to, not a replacement for, your own careful review and judgment.
+#### Remember: The safety of your system ultimately depends on your vigilance. Nova's security features are a supplement to, not a replacement for, your own careful review and judgment.
 
 ## License
 
