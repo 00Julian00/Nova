@@ -49,7 +49,6 @@ def SpeakDirect(text):
 
 @suppress_output_decorator
 def SpeakOffline(text):
-    print("Received: " + text)
     tts.tts_to_file(text=text, file_path="output.wav")
 
     playObj = simpleaudio.WaveObject.from_wave_file("output.wav").play()

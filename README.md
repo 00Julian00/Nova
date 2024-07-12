@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 1.1.1**
+**Version 1.2**
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -77,7 +77,22 @@ pip install -r requirements.txt
 - **Name**: How the assistant should call you, i.e. your name.
 
 
+## Language Files
+Language Files are used to translate Novas Interface into different languages. Per default, Nova comes with English and German, but you can create your own:
+
+- ### Creating a Language File:
+Go into LangFiles and copy en.json. Rename it to the language code you want to translate it into (For example: en, es, fr, de, etc.). Open the file in a text editor and translate the contents of the individual categories. Do not translate the names of the categories as they are used to find the correct text within the file. Do not change the structure of the file itself.
+
+- ### Updating a Language File:
+When a new update releases, it might come with new entries in the Language Files. To update your Language File, first look at the structure of en.json, as this Language File will always be up to date with the newest Version of Nova. If the structure has changed, or a category has new entries you will need to update your file as well. You need to copy the exact structure of en.json. Failing to do so might cause Nova to crash at any point. Finally you need to update the Version that is stored inside the Language File to match that of Nova.
+
 ## Version history
+
+### Version 1.2
+
+- **Release Date:** 12.07.2024
+- **Changes:**
+    - Added Language file integrations. You can now translate Novas Interface into different languages. 
 
 ### Version 1.1.1
 

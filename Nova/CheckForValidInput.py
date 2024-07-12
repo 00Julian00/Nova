@@ -4,6 +4,8 @@ from elevenlabs.client import ElevenLabs
 import ConfigInteraction
 from KeyManager import GetKey
 
+langFile = ConfigInteraction.GetLanguageFile()
+
 client = ElevenLabs(api_key=GetKey("Elevenlabs"))
 
 def CheckForValidInput(setting, input):
@@ -12,7 +14,7 @@ def CheckForValidInput(setting, input):
             Language.get(input)
             return True
         except:
-            return "Invalid input. Must be a valid language code. (For example: en, es, fr, de, etc.)"
+            return langFile["Errors"][7]
 
     if (setting == "Hotword"):
         return True
@@ -28,26 +30,26 @@ def CheckForValidInput(setting, input):
             client.voices.get(input)
             return True
         except:
-            return "Invalid input. Must be a valid voice ID. Visit https://elevenlabs.io to find a valid voice and its ID."
+            return langFile["Errors"][7]
 
     if (setting == "OfflineMode"):
         if (input == "True" or input == "False"):
             return True
         else:
-            return "Invalid input. Must be 'True' or 'False'"
+            return langFile["Errors"][8]
 
     if (setting == "StreamVoice"):
         if (input == "True" or input == "False"):
             return True
         else:
-            return "Invalid input. Must be 'True' or 'False'"
+            return langFile["Errors"][8]
 
     if (setting == "MicrophoneIndex"):
         try:
             int(input)
             return True
         except:
-            return "Invalid input. Must be an integer. Type 'micID' in the main menu to get the correct microphone ID."
+            return langFile["Errors"][9]
 
     if (setting == "Behaviour"):
         return True

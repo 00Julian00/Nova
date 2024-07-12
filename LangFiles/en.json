@@ -1,0 +1,69 @@
+{
+    "Version" : "1.2",
+    
+    "Interface" : [
+        "Nova Interface",
+        "Developed by Julian.",
+        "Choose key to edit by typing the number. Press enter to save.",
+        "Type the new value and press enter to save. Press enter to keep the current value:",
+        "Choose setting to edit by typing the number. Press enter to save.",
+        "Version",
+        "Type 'help' to see a list of all available commands.",
+        "Nova AI Assistant",
+        "Current Mode: Offline. In the current Version, Modules are disabled in Offline Mode.",
+        "Current Mode: Online",
+        "Conversation history:"
+    ],
+
+    "Warnings": [
+        "Warning, this will expose your API keys. Continue? [y/n]",
+        "Warning, the Version of your language file does not match your version of Nova. This could result in crashes."
+    ],
+
+    "Errors": [
+        "Canceling...",
+        "Invalid. Canceling...",
+        "Invalid input. Type the number of the key you want to edit or press enter to save.",
+        "Unable to access the settings file.",
+        "Invalid input. Type the number of the setting you want to edit or press enter to save.",
+        "Invalid. Did you mean",
+        "Invalid. Type 'help' to see a list of all available commands.",
+        "Invalid input. Must be a valid language code. (For example: en, es, fr, de, etc.)",
+        "Invalid input. Must be a valid voice ID. Visit https://elevenlabs.io to find a valid voice and its ID.",
+        "Invalid input. Must be 'True' or 'False'",
+        "Invalid input. Must be an integer. Type 'micID' in the main menu to get the correct microphone ID.",
+        "Failed to connect to Groq. Please check your internet connection.",
+        "Failed to connect to Elevenlabs. Please check your internet connection."
+    ],
+
+    "Status": [
+        "Booting...",
+        "Shutting down...",
+        "Rebooting...",
+        "Calling module",
+        "with no parameters",
+        "with parameters",
+        "Loaded behaviour:",
+        "Module is loaded.",
+        "Modules are loaded.",
+        "Modules have an invalid file structure and could therefore not be loaded.",
+        "Connection to Groq successful.",
+        "Connection to Elevenlabs successful.",
+        "Initialized Language Model."
+    ],
+
+    "Misc": [
+        "User:",
+        "AI:"
+    ],
+
+    "Settings": [
+        "help: Show a list of all available commands",
+        "boot: Start Nova",
+        "keys: Edit your API keys. Warning: Will expose your API keys",
+        "settings: Edit your settings",
+        "exit: Exit the Interface. Does not close any instances of Nova running",
+        "micID: Lists all your microphones and ther IDs. You can then set the correct Id in 'settings'",
+        "clear: Clear the console"
+    ]
+}

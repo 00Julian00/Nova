@@ -11,7 +11,8 @@ import json
 from datetime import datetime
 from Helpers import suppress_output_decorator, suppress_output
 
-#This is the array that stores the entire conversation
+langFile = ConfigInteraction.GetLanguageFile()
+
 conversation = []
 
 userName = ConfigInteraction.GetSetting("Name")
@@ -68,9 +69,9 @@ def CallLanguageModel():
 
     for call in function_calls:
         if (str(call.function.arguments) == "{}"):
-            print("AI: Calling module " + str(call.function.name) + " with no parameters\n")
+            print(langFile["Misc"][1] + " " + langFile["Status"][3] + " " + str(call.function.name) + " " + langFile["Status"][4] + "\n")
         else:
-            print("AI: Calling module " + str(call.function.name) + " with parameters " + str(call.function.arguments) + "\n")
+            print(langFile["Misc"][1] + " " + langFile["Status"][3] + " " + str(call.function.name) + " " + langFile["Status"][5] + str(call.function.arguments) + "\n")
 
         result = ModuleManager.CallFunction(call.function.name, json.loads(call.function.arguments))
         if result == True:
@@ -83,7 +84,7 @@ def CallLanguageModel():
     if (len(function_calls) > 0):
         CallLanguageModel()
     else:
-        print("AI: " + response + "\n")
+        print(langFile["Misc"][1] + " " + response + "\n")
         AddToConversation(1, response, None, False)
 
 
@@ -92,14 +93,14 @@ def StartHotwordDetection():
         transcription = DetectHotword()
 
         if (transcription != None):
-            print("User: " + transcription + "\n")
+            print(langFile["Misc"][0] + " " + transcription + "\n")
             AddToConversation(0, transcription, None, True)
 
 def PingGroq():
     url = "https://api.groq.com"
 
     try:
-        response = requests.head(url, headers={})
+        requests.head(url, headers={})
     except:
         return False
 
@@ -109,7 +110,7 @@ def PingElevenlabs():
     url = "https://elevenlabs.io"
 
     try:
-        response = requests.head(url, headers={})
+        requests.head(url, headers={})
     except:
         return False
 
@@ -119,39 +120,43 @@ def ClearConsole():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def PrintHeader():
-    print(f"Nova AI Assistant (Version {version}). Developed by Julian.\n")
-    print("Loaded behaviour: " + ConfigInteraction.GetSetting("Behaviour"))
+    print(langFile["Interface"][7] + " (" + langFile["Interface"][5] + " " + version + "). " + langFile["Interface"][1] + "\n")
+    print(langFile["Status"][6] + " " + ConfigInteraction.GetSetting("Behaviour"))
+    if (offlineMode == "True"):
+        print(langFile["Interface"][8])
+    else:
+        print(langFile["Interface"][9])
 
     validModules, invalidModules = ModuleManager.ScanModules()
 
     if (validModules == 1):
-        print(f"{validModules} Module is loaded.")
+        print(str(validModules) + " " + langFile["Status"][7])
     else:
-        print(f"{validModules} Modules are loaded.")
+        print(str(validModules) + " " + langFile["Status"][8])
 
     if (invalidModules > 0):
-        print(f"{invalidModules} Modules have an invalid file structure and could therefore not be loaded.")
+        print(str(invalidModules) + " " + langFile["Status"][9])
 
-    print("\nConversation history:")
+    print("\n" + langFile["Interface"][10])
     
 def Initialize():
-    print("> Booting...")
+    print("> " + langFile["Status"][0])
 
     if (ConfigInteraction.GetSetting("OfflineMode") == "False"): #TODO: Switch to offline if APIs can't be reached or an API key is missing
         if (PingGroq()):
-            print("> Connection to Groq successful.")
+            print("> " + langFile["Status"][10])
         else:
-            print("Failed to connect to Groq. Please check your internet connection.")
+            print(langFile["Errors"][11])
             exit()
 
         if (PingElevenlabs()):
-            print("> Connection to Elevenlabs successful.")
+            print("> " + langFile["Status"][11])
         else:
-            print("Failed to connect to Elevenlabs. Please check your internet connection.")
+            print(langFile["Errors"][12])
             exit()
 
     AddToConversation(3, systemPrompt, None, False)
-    print("> Initialized Language Model.")
+    print("> " + langFile["Status"][12])
 
     ClearConsole()
     PrintHeader()

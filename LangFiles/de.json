@@ -1,0 +1,69 @@
+{
+    "Version" : "1.2",
+    
+    "Interface" : [
+        "Nova Interface",
+        "Entwickelt von Julian.",
+        "Wähle den zu bearbeitenden Schlüssel durch Eingabe der Nummer. Drücke Enter zum Speichern.",
+        "Gib den neuen Wert ein und drücke Enter zum Speichern. Drücke Enter, um den aktuellen Wert beizubehalten:",
+        "Wähle die zu bearbeitende Einstellung durch Eingabe der Nummer. Drücke Enter zum Speichern.",
+        "Version",
+        "Gib 'help' ein, um eine Liste aller verfügbaren Befehle zu sehen.",
+        "Nova KI-Assistent",
+        "Aktueller Modus: Offline. In der aktuellen Version sind Module im Offline-Modus deaktiviert.",
+        "Aktueller Modus: Online",
+        "Gesprächsverlauf:"
+    ],
+
+    "Warnings": [
+        "Warnung, dies wird deine API-Schlüssel offenlegen. Fortfahren? [j/n]",
+        "Warnung, die Version deiner Sprachdatei stimmt nicht mit der von Nova überein. Dies könnte in Abstürzen resultieren."
+    ],
+
+    "Errors": [
+        "Abbrechen...",
+        "Ungültig. Abbrechen...",
+        "Ungültige Eingabe. Gib die Nummer des Schlüssels ein, den du bearbeiten möchtest, oder drücke Enter zum Speichern.",
+        "Zugriff auf die Einstellungsdatei nicht möglich.",
+        "Ungültige Eingabe. Gib die Nummer der Einstellung ein, die du bearbeiten möchtest, oder drücke Enter zum Speichern.",
+        "Ungültig. Meintest du",
+        "Ungültig. Gib 'help' ein, um eine Liste aller verfügbaren Befehle zu sehen.",
+        "Ungültige Eingabe. Muss ein gültiger Sprachcode sein. (Zum Beispiel: en, es, fr, de, usw.)",
+        "Ungültige Eingabe. Muss eine gültige Stimmen-ID sein. Besuche https://elevenlabs.io, um eine gültige Stimme und deren ID zu finden.",
+        "Ungültige Eingabe. Muss 'True' oder 'False' sein",
+        "Ungültige Eingabe. Muss eine ganze Zahl sein. Gib 'micID' im Hauptmenü ein, um die korrekte Mikrofon-ID zu erhalten.",
+        "Verbindung zu Groq fehlgeschlagen. Bitte überprüfe deine Internetverbindung.",
+        "Verbindung zu Elevenlabs fehlgeschlagen. Bitte überprüfe deine Internetverbindung."
+    ],
+
+    "Status": [
+        "Wird gestartet...",
+        "Wird heruntergefahren...",
+        "Wird neu gestartet...",
+        "Modul wird aufgerufen",
+        "ohne Parameter",
+        "mit Parametern",
+        "Geladenes Verhalten:",
+        "Modul ist geladen.",
+        "Module sind geladen.",
+        "Module haben eine ungültige Dateistruktur und konnten daher nicht geladen werden.",
+        "Verbindung zu Groq erfolgreich.",
+        "Verbindung zu Elevenlabs erfolgreich.",
+        "Sprachmodell initialisiert."
+    ],
+
+    "Misc": [
+        "Benutzer:",
+        "KI:"
+    ],
+
+    "Settings": [
+        "help: Zeige eine Liste aller verfügbaren Befehle",
+        "boot: Starte Nova",
+        "keys: Bearbeite deine API-Schlüssel. Warnung: Dies wird deine API-Schlüssel offenlegen",
+        "settings: Bearbeite deine Einstellungen",
+        "exit: Beende die Benutzeroberfläche. Schließt keine laufenden Instanzen von Nova",
+        "micID: Listet alle deine Mikrofone und ihre IDs auf. Du kannst dann die richtige ID in 'settings' einstellen",
+        "clear: Lösche die Konsole"
+    ]
+}

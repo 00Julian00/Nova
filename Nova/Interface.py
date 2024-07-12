@@ -3,13 +3,15 @@
 import os
 import subprocess
 import pyaudio
-from Levenshtein import distance
 from prompt_toolkit import prompt
 import ConfigInteraction
 from CheckForValidInput import CheckForValidInput
 from KeyManager import GetKey, SetKey, GetKeyList
 
-commands = ConfigInteraction.GetInterfaceCommands()
+os.environ['PYTHONIOENCODING'] = 'UTF-8'
+
+langFile = ConfigInteraction.GetLanguageFile()
+
 version = ConfigInteraction.GetManifest()["version"]
 
 #Constants
@@ -18,15 +20,15 @@ distanceToSuggest = 2
 
 def Help():
     #Print all available commands
-    for name, description in commands.items():
-        print(name + ": " + description)
+    for setting in langFile["Settings"]:
+        print(setting)
 
 def Boot():
     corePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Core.py")
     corePath = '"' + corePath + '"'
     command = f'start cmd /c title Nova ^& python {corePath}'
 
-    process = subprocess.Popen(command, shell=True)
+    subprocess.Popen(command, shell=True)
 
 
 def Shutdown(): #!Bugged. Disabled in the interface.
@@ -36,13 +38,13 @@ def Shutdown(): #!Bugged. Disabled in the interface.
 def EditAPIkeys():
     #List all API keys and let the user change them
     
-    confirm = input("Warning, this will expose your API keys. Continue? [y/n] ")
+    confirm = input(langFile["Warnings"][0] + " ")
 
     if (confirm == "n"):
-        print("Canceling...")
+        print(langFile["Errors"][0])
         return
     elif (confirm != "y"):
-        print("Invalid. Canceling...")
+        print(langFile["Errors"][1])
         return
 
     
@@ -55,7 +57,7 @@ def EditAPIkeys():
             
             print(id + ". " + GetKeyList()[id] + " | ", GetKey(GetKeyList()[id]))
         
-        chosenKey = input("\nChoose key to edit by typing the number. Press enter to save.\n> ")
+        chosenKey = input("\n" + langFile["Interface"][2] + "\n> ")
 
         #Save the keys and exit the settings menu
         if (chosenKey == ""):
@@ -66,27 +68,29 @@ def EditAPIkeys():
         try:
             int(chosenKey)
         except:
-            print("Invalid input. Type the number of the key you want to edit or press enter to save.")
+            print(langFile["Errors"][2])
             continue
 
         if (int(chosenKey) < 1 or int(chosenKey) > len(GetKeyList())):
-            print("Invalid input. Type the number of the key you want to edit or press enter to save.")
+            print(langFile["Errors"][2])
             continue
         
         chosenKey = str(chosenKey)
 
         #Edit the setting
         PrintHeader()
-        print("\nType the new value and press enter to save. Press enter to keep the current value:")
+        print("\n" + langFile["Interface"][3])
 
         SetKey(GetKeyList()[chosenKey], prompt(f"{GetKeyList()[chosenKey]} | ", default = GetKey(GetKeyList()[chosenKey])))
         ClearConsole()
 
 def Settings():
+    global langFile
+    
     try:
         settings = ConfigInteraction.GetSettings()
     except:
-        print("Unable to access the settings file.")
+        print(langFile["Errors"][3])
         return
     
     while True:
@@ -101,11 +105,12 @@ def Settings():
             names.append(name)
             values.append(value)
         
-        chosenSettings = input("\nChoose setting to edit by typing the number. Press enter to save.\n> ")
+        chosenSettings = input("\n" + langFile["Interface"][4] + "\n> ")
 
         #Save the settings and exit the settings menu
         if (chosenSettings == ""):
             ConfigInteraction.SetSettings(settings)
+            langFile = ConfigInteraction.GetLanguageFile() #Reload the language file in case the user switched languages
             PrintHeader()
             return
         
@@ -113,16 +118,16 @@ def Settings():
         try:
             chosenSettings = int(chosenSettings)
         except:
-            print("Invalid input. Type the number of the setting you want to edit or press enter to save.")
+            print(langFile["Errors"][4])
             continue
 
         if (chosenSettings < 1 or chosenSettings > len(settings)):
-            print("Invalid input. Type the number of the setting you want to edit or press enter to save.")
+            print(langFile["Errors"][4])
             continue
         
         #Edit the setting
         PrintHeader()
-        print("\nType the new value and press enter to save. Press enter to keep the current value:")
+        print("\n" + langFile["Interface"][3])
         newValue = prompt(names[chosenSettings - 1] + " | ", default = settings[names[chosenSettings - 1]])
         while True:
             valid = CheckForValidInput(names[chosenSettings - 1], newValue)
@@ -147,13 +152,6 @@ def ListMicID():
 
     p.terminate()
 
-def CheckForCloseCommand(command): #Check if an input is close to a command and suggest it
-    for name, description in commands.items():
-        if (distance(command, name) <= distanceToSuggest):
-            print(f"Invalid. Did you mean {name}?")
-            return
-    print("Invalid. Type 'help' to see a list of all available commands")
-
 def ProcessInput():
     Input = input("> ")
 
@@ -162,13 +160,13 @@ def ProcessInput():
     if (Input == "help"):
         Help()
     elif (Input == "boot"):
-        print("Booting...")
+        print(langFile["Status"][0])
         Boot()
     elif (Input == "shutdown"):
-        print("Shutting down...")
+        print(langFile["Status"][1])
         Shutdown()
     elif (Input == "reboot"):
-        print("Rebooting...")
+        print(langFile["Status"][2])
         Shutdown()
         Boot()
     elif (Input == "keys"):
@@ -184,7 +182,7 @@ def ProcessInput():
     elif (Input == "clear"):
         PrintHeader()
     else:
-        CheckForCloseCommand(Input)
+        print(langFile["Errors"][6])
 
     #To add: Run diagnostics
     
@@ -195,7 +193,11 @@ def ClearConsole():
 
 def PrintHeader():
     ClearConsole()
-    print(f'Nova Interface (Version {version}). Developed by Julian. Type "help" to see a list of all available commands\n')
+    print(langFile["Interface"][0] + " (" + langFile["Interface"][5] + " " + version + "). " + langFile["Interface"][1] + " " + langFile["Interface"][6])
+
+    if (langFile["Version"] != str(version)):
+        print(langFile["Warnings"][1])
+
 
 PrintHeader()
 ProcessInput()

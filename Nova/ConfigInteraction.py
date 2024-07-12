@@ -11,6 +11,7 @@ ModuleListPath = os.path.join(script_dir, 'Configs', 'ModuleList.json')
 FunctionsPath = os.path.join(script_dir, 'Configs', 'Functions.json')
 ModuleInitializationPath = os.path.join(script_dir, 'Configs', 'HasModuleBeenInitialized.json')
 ManifestPath = os.path.join(os.path.dirname(script_dir), 'manifest.json')
+LangFilesPath = os.path.join(os.path.dirname(script_dir), 'LangFiles')
 
 def GetSetting(setting):
     try:
@@ -77,3 +78,19 @@ def GetManifest():
             return(json.load(file))
     except Exception as e:
         print("Failed to fetch manifest\n" + e)
+
+def GetLanguageFile():
+    language = GetSetting("Language")
+    
+    langFilePath = os.path.join(LangFilesPath, f'{language}.json')
+
+    try:
+        with open(langFilePath, 'r', encoding='utf-8') as file:
+            return(json.load(file))
+    except:
+        print(f"Could not load the language files for {language}, switching to english.")
+        try:
+            with open(os.path.join(LangFilesPath, 'en.json'), 'r', encoding='utf-8') as file:
+                return(json.load(file))
+        except:
+            raise SystemError("Language file for english was not found.")
