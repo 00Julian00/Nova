@@ -19,3 +19,4 @@ transformers
 pyaudio
 accelerate
 TTS
+simpleaudio

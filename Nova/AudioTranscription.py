@@ -20,7 +20,7 @@ if (offlineMode == "False"):
     model = "whisper-large-v3"
 else:
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'  # Required for running on Windows
-    fasterWhisperModel = WhisperModel("distil-large-v3", device="cuda", compute_type="float16")
+    fasterWhisperModel = WhisperModel("distil-large-v3", device="cuda", compute_type="float32")
 
 vadModel, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad', model='silero_vad', trust_repo=True)
 (get_speech_ts, _, read_audio, VADIterator, collect_chunks) = utils
