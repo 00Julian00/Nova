@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 1.1**
+**Version 1.1.1**
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -79,6 +79,12 @@ pip install -r requirements.txt
 
 ## Version history
 
+### Version 1.1.1
+
+- **Release Date:** 12.07.2024
+- **Changes:**
+    - Security update: Nova now blocks Modules from using the following libaries: os, sys, subprocess, keyring, as these libaries can cause damage on your computer or steal sensitive information.
+
 ### Version 1.1
 
 - **Release Date:** 11.07.2024
@@ -123,6 +129,17 @@ pip install -r requirements.txt
     - Basic vocal interaction using Google STT, OpenAIs Whisper, OpenAIs GPT 3.5 and Elevenlabs multilingual v1.
     - Basic modules.
 
+
+### ⚠️SECURITY WARNING
+# When using modules created by third parties, please exercise caution:
+
+1. Always review the code: Thoroughly examine any third-party module before running it. This is crucial for ensuring its safety and understanding its functionality.
+2. Limited protection: While Nova attempts to restrict access to sensitive libraries, this does not guarantee complete security. Determined actors may find ways to circumvent these restrictions.
+3. Trust is key: Only use modules from sources you trust. Be especially cautious with modules that handle sensitive data or perform system operations.
+4. Keep updated: Regularly update Nova to have the best possible protection against threats and bad actors.
+5. Report suspicions: If you encounter a module that seems malicious or insecure, please report it to the Nova community.
+
+## Remember: The safety of your system ultimately depends on your vigilance. Nova's security features are a supplement to, not a replacement for, your own careful review and judgment.
 
 ## License
 
