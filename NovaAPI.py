@@ -65,10 +65,3 @@ def StopNova():
 
 def GetStatus():
     return isNovaRunning.value
-
-if __name__ == "__main__":
-    print("Running")
-    StartNova()
-    while True:
-        print(isNovaRunning.value)
-        time.sleep(1)
