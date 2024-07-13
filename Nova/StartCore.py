@@ -1,0 +1,3 @@
+import Core
+
+Core.Start()

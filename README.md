@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 1.2**
+**Version 1.3**
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -30,7 +30,7 @@ The Next-Generation Open-Source Virtual Assistant (or NOVA) is an easily expanda
 ```bash
 git clone https://github.com/00Julian00/Nova.git
 cd Nova
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip3 install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 ```
 
@@ -88,11 +88,17 @@ When a new update releases, it might come with new entries in the Language Files
 
 ## Version history
 
+### Version 1.3
+
+- **Release Date:** 13.07.2024
+- **Changes:**
+    - First implementation of the Nova API that allows other programs to access Novas features. See [here](https://github.com/00Julian00/Nova-Devtools.git) for a guide on how to use the API. The capabilities of the API will be expanded in the future.
+
 ### Version 1.2
 
 - **Release Date:** 12.07.2024
 - **Changes:**
-    - Added Language file integrations. You can now translate Novas Interface into different languages. 
+    - Added Language file integrations. You can now translate Novas Interface into different languages. See [here](#creating-a-language-file) how to do that.
 
 ### Version 1.1.1
 
@@ -145,8 +151,8 @@ When a new update releases, it might come with new entries in the Language Files
     - Basic modules.
 
 
-### ⚠️SECURITY WARNING
-#### When using modules created by third parties, please exercise caution:
+## ⚠️SECURITY WARNING
+### When using modules created by third parties, please exercise caution:
 
 1. Always review the code: Thoroughly examine any third-party module before running it. This is crucial for ensuring its safety and understanding its functionality.
 2. Limited protection: While Nova attempts to restrict access to sensitive libraries, this does not guarantee complete security. Determined actors may find ways to circumvent these restrictions.
@@ -154,7 +160,7 @@ When a new update releases, it might come with new entries in the Language Files
 4. Keep updated: Regularly update Nova to have the best possible protection against threats and bad actors.
 5. Report suspicions: If you encounter a module that seems malicious or insecure, please report it to the Nova community.
 
-#### Remember: The safety of your system ultimately depends on your vigilance. Nova's security features are a supplement to, not a replacement for, your own careful review and judgment.
+### Remember: The safety of your system ultimately depends on your vigilance. Nova's security features are a supplement to, not a replacement for, your own careful review and judgment.
 
 ## License
 

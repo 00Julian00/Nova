@@ -9,21 +9,38 @@ from KeyManager import GetKey
 from faster_whisper import WhisperModel
 import torch
 import torchaudio
+from Helpers import suppress_output, suppress_output_decorator
 
 micIndex = int(ConfigInteraction.GetSetting("MicrophoneIndex"))
 hotword = ConfigInteraction.GetSetting("Hotword")
 language = ConfigInteraction.GetSetting("Language")
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-if (offlineMode == "False"):
-    client = Groq(api_key=GetKey("Groq"))
-    model = "whisper-large-v3"
-else:
-    os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'  # Required for running on Windows
-    fasterWhisperModel = WhisperModel("distil-large-v3", device="cuda", compute_type="float32")
+client = 0
+model = 0
+fasterWhisperModel = 0
+get_speech_ts = 0
+read_audio = 0
+vadModel = 0
 
-vadModel, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad', model='silero_vad', trust_repo=True)
-(get_speech_ts, _, read_audio, VADIterator, collect_chunks) = utils
+@suppress_output_decorator
+def Initialize():
+    global client
+    global model
+    global fasterWhisperModel
+    global get_speech_ts
+    global read_audio
+    global vadModel
+
+    if (offlineMode == "False"):
+        client = Groq(api_key=GetKey("Groq"))
+        model = "whisper-large-v3"
+    else:
+        os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'  # Required for running on Windows
+        fasterWhisperModel = WhisperModel("distil-large-v3", device="cuda", compute_type="float32")
+
+    vadModel, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad', model='silero_vad', trust_repo=True)
+    (get_speech_ts, _, read_audio, VADIterator, collect_chunks) = utils
 
 # Audio settings
 sample_rate = 16000  # Sample rate in Hz
@@ -57,12 +74,16 @@ def Listen():
     is_recording = False
     silence_start = None
     transcription = None
+    startTime = time_module.time()
 
     def callback(indata, frames, time_info, status):
         global audio_buffer, is_recording, silence_start, transcription
         audio = np.frombuffer(indata, dtype=np.int16)
         normalized_audio = audio.astype(np.float32) / 32768.0
         rms = np.sqrt(np.mean(normalized_audio**2))
+
+        if (not is_recording and time_module.time() - startTime > 1): #Time out after 1 second to allow the API to stop the hotword detection if needed
+            transcription = ""
 
         # Start recording when the audio level exceeds the start threshold
         if not is_recording and rms > start_threshold:

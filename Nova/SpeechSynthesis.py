@@ -5,17 +5,31 @@ from KeyManager import GetKey
 import os
 from TTS.api import TTS
 import simpleaudio
-from Helpers import suppress_output_decorator
+from Helpers import suppress_output_decorator, suppress_output
 
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-if (offlineMode == "False"):
-    voiceID = ConfigInteraction.GetSetting("ElevenlabsVoiceID")
-    model = ConfigInteraction.GetSetting("ElevenlabsModel")
-    client = ElevenLabs(api_key=GetKey("Elevenlabs"))
-    streamVoice = ConfigInteraction.GetSetting("StreamVoice")
-else:
-    tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC")
+voiceID = 0
+model = 0
+client = 0
+streamVoice = 0
+tts = 0
+
+@suppress_output_decorator
+def Initialize():
+    global voiceID
+    global model
+    global client
+    global streamVoice
+    global tts
+    
+    if (offlineMode == "False"):
+        voiceID = ConfigInteraction.GetSetting("ElevenlabsVoiceID")
+        model = ConfigInteraction.GetSetting("ElevenlabsModel")
+        client = ElevenLabs(api_key=GetKey("Elevenlabs"))
+        streamVoice = ConfigInteraction.GetSetting("StreamVoice")
+    else:
+        tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC")
 
 
 def SpeakStream(generator):        

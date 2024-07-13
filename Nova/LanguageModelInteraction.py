@@ -10,7 +10,18 @@ from Helpers import suppress_output_decorator, suppress_output
 
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-with suppress_output():
+client = 0
+model = 0
+pipe = 0
+generation_args = 0
+
+@suppress_output_decorator
+def Initialize():
+    global client
+    global model
+    global pipe
+    global generation_args
+    
     if (offlineMode == "False"):
         client = Groq(api_key=GetKey("Groq"))
         model = ConfigInteraction.GetSetting("GroqModel")

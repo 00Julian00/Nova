@@ -24,7 +24,7 @@ def Help():
         print(setting)
 
 def Boot():
-    corePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Core.py")
+    corePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "StartCore.py")
     corePath = '"' + corePath + '"'
     command = f'start cmd /c title Nova ^& python {corePath}'
 

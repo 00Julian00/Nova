@@ -27,7 +27,8 @@ def CheckForValidInput(setting, input):
 
     if (setting == "ElevenlabsVoiceID"):
         try:
-            client.voices.get(input)
+            if (GetKey("Elevenlabs") != ""):
+                client.voices.get(input)
             return True
         except:
             return langFile["Errors"][7]

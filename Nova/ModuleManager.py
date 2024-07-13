@@ -7,7 +7,7 @@ from Helpers import RestrictedImporter
 script_dir = os.path.dirname(os.path.realpath(__file__))
 modulePath = os.path.join(os.path.dirname(script_dir), 'Modules')
 
-disallowed_libaries = ['os', 'sys', 'subprocess', 'keyring']
+disallowed_libaries = ['os', 'sys', 'subprocess', 'keyring', 'KeyManager']
 
 def GetModuleFolders():
     entries = os.listdir(modulePath)

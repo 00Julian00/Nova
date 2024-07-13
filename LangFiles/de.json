@@ -1,5 +1,5 @@
 {
-    "Version" : "1.2",
+    "Version" : "1.3",
     
     "Interface" : [
         "Nova Interface",
@@ -21,8 +21,8 @@
     ],
 
     "Errors": [
-        "Abbrechen...",
-        "Ungültig. Abbrechen...",
+        "Abbruch...",
+        "Ungültig. Breche ab...",
         "Ungültige Eingabe. Gib die Nummer des Schlüssels ein, den du bearbeiten möchtest, oder drücke Enter zum Speichern.",
         "Zugriff auf die Einstellungsdatei nicht möglich.",
         "Ungültige Eingabe. Gib die Nummer der Einstellung ein, die du bearbeiten möchtest, oder drücke Enter zum Speichern.",

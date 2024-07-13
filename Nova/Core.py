@@ -1,8 +1,8 @@
 #Ths script connects all the different scripts in the Nova engine
 
-from AudioTranscription import DetectHotword
-from SpeechSynthesis import SpeakStream, SpeakDirect, SpeakOffline
-from LanguageModelInteraction import PromptLanguageModelAPI, PromptLanguageModelLocal, LLMStreamProcessor
+from AudioTranscription import DetectHotword, Initialize as HotwordInit
+from SpeechSynthesis import SpeakStream, SpeakDirect, SpeakOffline, Initialize as SpeechInit
+from LanguageModelInteraction import PromptLanguageModelAPI, PromptLanguageModelLocal, LLMStreamProcessor, Initialize as LangInit
 import ConfigInteraction
 import requests
 import os
@@ -10,6 +10,9 @@ import ModuleManager
 import json
 from datetime import datetime
 from Helpers import suppress_output_decorator, suppress_output
+from io import StringIO
+from contextlib import redirect_stdout, redirect_stderr
+import time
 
 langFile = ConfigInteraction.GetLanguageFile()
 
@@ -139,10 +142,14 @@ def PrintHeader():
 
     print("\n" + langFile["Interface"][10])
     
-def Initialize():
+def Initialize(useConsole):
     print("> " + langFile["Status"][0])
 
-    if (ConfigInteraction.GetSetting("OfflineMode") == "False"): #TODO: Switch to offline if APIs can't be reached or an API key is missing
+    HotwordInit()
+    LangInit()
+    SpeechInit()
+
+    if (ConfigInteraction.GetSetting("OfflineMode") == "False" and useConsole): #TODO: Switch to offline if APIs can't be reached or an API key is missing
         if (PingGroq()):
             print("> " + langFile["Status"][10])
         else:
@@ -158,10 +165,17 @@ def Initialize():
     AddToConversation(3, systemPrompt, None, False)
     print("> " + langFile["Status"][12])
 
-    ClearConsole()
-    PrintHeader()
+    if useConsole:
+        ClearConsole()
+        PrintHeader()
 
 
-Initialize()
+def StartFromAPI(running):
+    with suppress_output():
+        Initialize(False)
+        running.value = 1
+        StartHotwordDetection()
 
-StartHotwordDetection()
+def Start():
+    Initialize(True)
+    StartHotwordDetection()
