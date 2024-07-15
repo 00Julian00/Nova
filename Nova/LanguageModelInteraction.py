@@ -7,46 +7,49 @@ import ModuleManager
 import torch 
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from Helpers import suppress_output_decorator, suppress_output
+from llama_cpp import Llama
+from llama_cpp.llama_chat_format import Llava15ChatHandler
+from pathlib import Path
+from huggingface_hub import hf_hub_download
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
 
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-client = 0
-model = 0
-pipe = 0
-generation_args = 0
+langFile = ConfigInteraction.GetLanguageFile()
 
-@suppress_output_decorator
+client = None
+model = None
+
 def Initialize():
     global client
     global model
-    global pipe
-    global generation_args
     
     if (offlineMode == "False"):
         client = Groq(api_key=GetKey("Groq"))
         model = ConfigInteraction.GetSetting("GroqModel")
     else:
-        os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = 'True'
-        torch.random.manual_seed(0) 
-        model = AutoModelForCausalLM.from_pretrained( 
-            "microsoft/Phi-3-mini-128k-instruct",  
-            device_map="cuda",  
-            torch_dtype="auto",  
-            trust_remote_code=True,  
-        )
+        #Check if the llama3 gguf already exists and download it if not
+        if not Path(os.path.join(os.path.dirname(script_dir), "Models", "Llama3", "Meta-Llama-3-8B-Instruct-Q8_0.gguf")).is_file():
+            os.makedirs(os.path.join(os.path.dirname(script_dir), "Models", "Llama3"), exist_ok=True)
+            print(langFile["Status"][13])
+            hf_hub_download(
+                repo_id="bartowski/Meta-Llama-3-8B-Instruct-GGUF",
+                filename="Meta-Llama-3-8B-Instruct-Q8_0.gguf",
+                local_dir=os.path.join(os.path.dirname(script_dir), "Models", "Llama3")
+            )
 
-        pipe = pipeline( 
-            "text-generation", 
-            model=model, 
-            tokenizer=AutoTokenizer.from_pretrained("failspy/Phi-3-mini-128k-instruct-abliterated-v3"), 
+        llamaPath = os.path.join(os.path.dirname(script_dir), "Models", "Llama3", "Meta-Llama-3-8B-Instruct-Q8_0.gguf")
+
+        model = Llama(
+            model_path=llamaPath,
+            #chat_handler=Llava15ChatHandler(clip_model_path=mmproj_path),
+            chat_format="chatml",
+            n_gpu_layers=-1,
+            n_ctx=2048,
+            verbose=False,
+            logits_all = True
         ) 
-
-        generation_args = { 
-            "max_new_tokens": 512, 
-            "return_full_text": False, 
-            "temperature": 0.0, 
-            "do_sample": False, 
-        }
 
 def PromptLanguageModelAPI(Input):
     response = client.chat.completions.create(
@@ -57,11 +60,11 @@ def PromptLanguageModelAPI(Input):
 
     return(response)
 
-@suppress_output_decorator
+#@suppress_output_decorator
 def PromptLanguageModelLocal(Input):
-    output = pipe(Input, **generation_args) 
+    response = model.create_chat_completion(Input)
     
-    return(output)
+    return(response) #response['choices'][0]['message']['content']
 
 class LLMStreamProcessor:
     def __init__(self):

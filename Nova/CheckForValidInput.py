@@ -34,7 +34,7 @@ def CheckForValidInput(setting, input):
             return langFile["Errors"][7]
 
     if (setting == "OfflineMode"):
-        if (input == "True" or input == "False"):
+        if (input == "True" or input == "False" or input == "Mixed"):
             return True
         else:
             return langFile["Errors"][8]

@@ -16,12 +16,12 @@ hotword = ConfigInteraction.GetSetting("Hotword")
 language = ConfigInteraction.GetSetting("Language")
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-client = 0
-model = 0
-fasterWhisperModel = 0
-get_speech_ts = 0
-read_audio = 0
-vadModel = 0
+client = None
+model = None
+fasterWhisperModel = None
+get_speech_ts = None
+read_audio = None
+vadModel = None
 
 @suppress_output_decorator
 def Initialize():
@@ -32,7 +32,7 @@ def Initialize():
     global read_audio
     global vadModel
 
-    if (offlineMode == "False"):
+    if (offlineMode == "False" or offlineMode == "Mixed"):
         client = Groq(api_key=GetKey("Groq"))
         model = "whisper-large-v3"
     else:
@@ -105,7 +105,7 @@ def Listen():
 
                     #Check if the audio contains speech
                     if (len(get_speech_ts(read_audio(temp_file), vadModel)) > 0):
-                        if (offlineMode == "False"):
+                        if (offlineMode == "False" or offlineMode == "Mixed"):
                             transcription = ProcessAPI(temp_file)
                         else:
                             transcription = ProcessLocal(temp_file)

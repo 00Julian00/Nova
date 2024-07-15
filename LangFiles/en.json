@@ -1,5 +1,5 @@
 {
-    "Version" : "1.3",
+    "Version" : "1.4",
     
     "Interface" : [
         "Nova Interface",
@@ -9,9 +9,9 @@
         "Choose setting to edit by typing the number. Press enter to save.",
         "Version",
         "Type 'help' to see a list of all available commands.",
-        "Nova AI Assistant",
-        "Current Mode: Offline. In the current Version, Modules are disabled in Offline Mode.",
-        "Current Mode: Online",
+        "Nova AI-Assistant",
+        "Current mode:",
+        "In the current mode, Modules are unavailable.",
         "Conversation history:"
     ],
 
@@ -30,7 +30,7 @@
         "Invalid. Type 'help' to see a list of all available commands.",
         "Invalid input. Must be a valid language code. (For example: en, es, fr, de, etc.)",
         "Invalid input. Must be a valid voice ID. Visit https://elevenlabs.io to find a valid voice and its ID.",
-        "Invalid input. Must be 'True' or 'False'",
+        "Invalid input. Must be 'True', 'False' or 'Mixed'",
         "Invalid input. Must be an integer. Type 'micID' in the main menu to get the correct microphone ID.",
         "Failed to connect to Groq. Please check your internet connection.",
         "Failed to connect to Elevenlabs. Please check your internet connection."
@@ -49,7 +49,8 @@
         "Modules have an invalid file structure and could therefore not be loaded.",
         "Connection to Groq successful.",
         "Connection to Elevenlabs successful.",
-        "Initialized Language Model."
+        "Initialized Language Model.",
+        "Llama-3 was not yet downloaded. Downloading... (This may take a few minutes)"
     ],
 
     "Misc": [

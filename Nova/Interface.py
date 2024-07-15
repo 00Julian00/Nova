@@ -141,6 +141,8 @@ def Settings():
                 print("\n" + valid)
                 newValue = prompt(names[chosenSettings - 1] + " | ", default = settings[names[chosenSettings - 1]])
 
+def ManageModules(): #Show loaded models and lets the user fill in secrets
+    pass
 
 def ListMicID():
     p = pyaudio.PyAudio()
@@ -181,6 +183,8 @@ def ProcessInput():
         ListMicID()
     elif (Input == "clear"):
         PrintHeader()
+    elif (Input == "Modules"):
+        ManageModules()
     else:
         print(langFile["Errors"][6])
 

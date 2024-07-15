@@ -1,5 +1,5 @@
 {
-    "Version" : "1.3",
+    "Version" : "1.4",
     
     "Interface" : [
         "Nova Interface",
@@ -10,14 +10,14 @@
         "Version",
         "Gib 'help' ein, um eine Liste aller verfügbaren Befehle zu sehen.",
         "Nova KI-Assistent",
-        "Aktueller Modus: Offline. In der aktuellen Version sind Module im Offline-Modus deaktiviert.",
-        "Aktueller Modus: Online",
+        "Aktueller Modus:",
+        "Im aktuellen Modus sind Module nicht verfügbar.",
         "Gesprächsverlauf:"
     ],
 
     "Warnings": [
-        "Warnung, dies wird deine API-Schlüssel offenlegen. Fortfahren? [j/n]",
-        "Warnung, die Version deiner Sprachdatei stimmt nicht mit der von Nova überein. Dies könnte in Abstürzen resultieren."
+        "Warnung, dies wird deine API-Schlüssel offenlegen. Fortfahren? [y/n]",
+        "Warnung, die Version deiner Sprachdatei stimmt nicht mit der von Nova überein. Dies könnte zu Abstürzen führen."
     ],
 
     "Errors": [
@@ -30,7 +30,7 @@
         "Ungültig. Gib 'help' ein, um eine Liste aller verfügbaren Befehle zu sehen.",
         "Ungültige Eingabe. Muss ein gültiger Sprachcode sein. (Zum Beispiel: en, es, fr, de, usw.)",
         "Ungültige Eingabe. Muss eine gültige Stimmen-ID sein. Besuche https://elevenlabs.io, um eine gültige Stimme und deren ID zu finden.",
-        "Ungültige Eingabe. Muss 'True' oder 'False' sein",
+        "Ungültige Eingabe. Muss 'True', 'False' oder 'Mixed' sein",
         "Ungültige Eingabe. Muss eine ganze Zahl sein. Gib 'micID' im Hauptmenü ein, um die korrekte Mikrofon-ID zu erhalten.",
         "Verbindung zu Groq fehlgeschlagen. Bitte überprüfe deine Internetverbindung.",
         "Verbindung zu Elevenlabs fehlgeschlagen. Bitte überprüfe deine Internetverbindung."
@@ -49,7 +49,8 @@
         "Module haben eine ungültige Dateistruktur und konnten daher nicht geladen werden.",
         "Verbindung zu Groq erfolgreich.",
         "Verbindung zu Elevenlabs erfolgreich.",
-        "Sprachmodell initialisiert."
+        "Sprachmodell initialisiert.",
+        "Llama-3 wurde noch nicht heruntergeladen. Lädt runter... (Dies könnte ein paar Minuten dauern)"
     ],
 
     "Misc": [

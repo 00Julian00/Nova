@@ -9,11 +9,11 @@ from Helpers import suppress_output_decorator, suppress_output
 
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-voiceID = 0
-model = 0
-client = 0
-streamVoice = 0
-tts = 0
+voiceID = None
+model = None
+client = None
+streamVoice = None
+tts = None
 
 @suppress_output_decorator
 def Initialize():
@@ -23,7 +23,7 @@ def Initialize():
     global streamVoice
     global tts
     
-    if (offlineMode == "False"):
+    if (offlineMode == "False" or offlineMode == "Mixed"):
         voiceID = ConfigInteraction.GetSetting("ElevenlabsVoiceID")
         model = ConfigInteraction.GetSetting("ElevenlabsModel")
         client = ElevenLabs(api_key=GetKey("Elevenlabs"))

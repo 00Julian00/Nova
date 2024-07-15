@@ -49,11 +49,10 @@ def CallLanguageModel():
         conversationWithInfo.append({"role": "system", "content": "The date is " + datetime.now().strftime("%d/%m/%Y") + " The time is " + datetime.now().strftime("%H:%M")})
         conversationWithInfo.append({"role": "system", "content": f"The name of the user is {userName}."})
         
-        with suppress_output():
-            if (offlineMode == "False"):
-                LLMresponse = PromptLanguageModelAPI(conversationWithInfo)
-            else:
-                LLMresponse = PromptLanguageModelLocal(conversationWithInfo)
+        if (offlineMode == "False"):
+            LLMresponse = PromptLanguageModelAPI(conversationWithInfo)
+        else:
+            LLMresponse = PromptLanguageModelLocal(conversationWithInfo)
 
     except Exception as e:
         print("An error occured when communicating with the Groq API:\n" + str(e))
@@ -64,10 +63,14 @@ def CallLanguageModel():
     if (offlineMode == "False"):
         SpeakStream(processor.ExtractData(LLMresponse))
         response, function_calls = processor.GetData()
-    else:
-        response = LLMresponse[0]['generated_text']
+    elif (offlineMode == "True"):
+        response = LLMresponse['choices'][0]['message']['content'].replace("assistant", "")#Temporary fix for strange model behaviour
         function_calls = []
         SpeakOffline(response)
+    else:
+        response = LLMresponse['choices'][0]['message']['content'].replace("assistant", "")#Temporary fix for strange model behaviour
+        function_calls = []
+        SpeakDirect(response)
 
 
     for call in function_calls:
@@ -125,10 +128,11 @@ def ClearConsole():
 def PrintHeader():
     print(langFile["Interface"][7] + " (" + langFile["Interface"][5] + " " + version + "). " + langFile["Interface"][1] + "\n")
     print(langFile["Status"][6] + " " + ConfigInteraction.GetSetting("Behaviour"))
-    if (offlineMode == "True"):
-        print(langFile["Interface"][8])
+
+    if (offlineMode == "True" or offlineMode == "Mixed"): #If using the local LLM, inform that modules are unavailable in the current version
+        print(langFile["Interface"][8] + " " + offlineMode + ". " + langFile["Interface"][9])
     else:
-        print(langFile["Interface"][9])
+        print(langFile["Interface"][8] + " " + offlineMode)
 
     validModules, invalidModules = ModuleManager.ScanModules()
 

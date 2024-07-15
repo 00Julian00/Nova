@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 1.3**
+**Version 1.4**
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -87,6 +87,13 @@ Go into LangFiles and copy en.json. Rename it to the language code you want to t
 When a new update releases, it might come with new entries in the Language Files. To update your Language File, first look at the structure of en.json, as this Language File will always be up to date with the newest Version of Nova. If the structure has changed, or a category has new entries you will need to update your file as well. You need to copy the exact structure of en.json. Failing to do so might cause Nova to crash at any point. Finally you need to update the Version that is stored inside the Language File to match that of Nova.
 
 ## Version history
+
+### Version 1.4
+
+- **Release Date:** 15.07.2024
+- **Changes:**
+    - Now using llama-cpp-python for LLM inference for improved speed and reliability. Switched from Phi-3-mini-128k-instruct to Llama3-8b as the default offline LLM. More offline improvements are in development.
+    - Added a 'Mixed' offline mode that uses Whisper (hosted on Groq) and Elevenlabs but runs Llama-3-8b on-device.
 
 ### Version 1.3
 
