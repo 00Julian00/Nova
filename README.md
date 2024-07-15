@@ -92,7 +92,8 @@ When a new update releases, it might come with new entries in the Language Files
 
 - **Release Date:** 15.07.2024
 - **Changes:**
-    - Now using llama-cpp-python for LLM inference for improved speed and reliability. Switched from Phi-3-mini-128k-instruct to Llama3-8b as the default offline LLM. More offline improvements are in development.
+    - Now using llama-cpp-python for LLM inference for improved speed and reliability. More offline improvements are in development.
+    - Switched from Phi-3-mini-128k-instruct to Llama3-8b as the default offline LLM.
     - Added a 'Mixed' offline mode that uses Whisper (hosted on Groq) and Elevenlabs but runs Llama-3-8b on-device.
 
 ### Version 1.3
