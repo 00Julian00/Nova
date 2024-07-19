@@ -11,6 +11,12 @@ from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Llava15ChatHandler
 from pathlib import Path
 from huggingface_hub import hf_hub_download
+import PIL.ImageFile
+import cv2
+import PIL.Image
+import google.generativeai as genai
+import pathlib
+import mimetypes
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -20,14 +26,18 @@ langFile = ConfigInteraction.GetLanguageFile()
 
 client = None
 model = None
+gemini = None
 
 def Initialize():
     global client
     global model
+    global gemini
     
     if (offlineMode == "False"):
         client = Groq(api_key=GetKey("Groq"))
         model = ConfigInteraction.GetSetting("GroqModel")
+        genai.configure(api_key=GetKey("Google Gemini"))
+        gemini = genai.GenerativeModel("gemini-1.5-flash")
     else:
         #Check if the llama3 gguf already exists and download it if not
         if not Path(os.path.join(os.path.dirname(script_dir), "Models", "Llama3", "Meta-Llama-3-8B-Instruct-Q8_0.gguf")).is_file():
@@ -48,23 +58,41 @@ def Initialize():
             n_gpu_layers=-1,
             n_ctx=2048,
             verbose=False,
-            logits_all = True
+            logits_all=True
         ) 
 
-def PromptLanguageModelAPI(Input):
+def PromptLanguageModelAPI(Conversation, stream):
     response = client.chat.completions.create(
     model=model,
     tools=ModuleManager.GetModules(),
-    messages=Input,
-    stream=True)
+    messages=Conversation,
+    stream=stream)
 
     return(response)
 
 #@suppress_output_decorator
-def PromptLanguageModelLocal(Input):
-    response = model.create_chat_completion(Input)
+def PromptLanguageModelLocal(Conversation):
+    response = model.create_chat_completion(Conversation)
     
-    return(response) #response['choices'][0]['message']['content']
+    return(response)
+
+def PromptLanguageModelWithImage(Conversation, ImagePath):
+    img = PIL.Image.open(ImagePath)
+
+    response = gemini.generate_content([str(Conversation), img])
+
+    return(response)
+
+def PromptLanguageModelWithVideo(Conversation, VideoPath):
+    pass
+
+def PromptLanguageModelWithAudio(Conversation, AudioPath):
+    type = mimetypes.guess_type(AudioPath)
+    audio = {"mime_type": type, "data": pathlib.Path(AudioPath).read_bytes()}
+
+    response = gemini.generate_content([str(Conversation), audio])
+
+    return(response)
 
 class LLMStreamProcessor:
     def __init__(self):

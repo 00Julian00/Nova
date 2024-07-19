@@ -3,6 +3,8 @@ import json
 import sys
 import multiprocessing
 import time
+import threading
+from queue import Queue
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 CorePath = os.path.join(current_dir, 'Nova')
@@ -12,8 +14,12 @@ from CheckForValidInput import CheckForValidInput
 import KeyManager
 import Core
 
-isNovaRunning = multiprocessing.Value('i', 0) #0 = Not running, 1 = Running, 2 = Currently starting
-NovaProcess = multiprocessing.Process(target=Core.StartFromAPI, args=(isNovaRunning,))
+novaThread = None
+novaStatus = [0]
+detectHotword = True
+
+tasks = Queue(maxsize=0)
+results = Queue(maxsize=0)
 
 def SetSetting(name, value):
     if (CheckForValidInput(name, value) == True):
@@ -35,7 +41,7 @@ def GetSetting(name):
         try:
             return settings[name]
         except:
-            raise Exception("Setting does not exist.")
+            raise Exception(f"{name} was not found.")
         
 def SetKey(name, value):
     KeyManager.SetKey(name, value)
@@ -44,24 +50,58 @@ def GetKey(name):
     try:
         return KeyManager.GetKey(name)
     except:
-        raise Exception("This key does not exist.")
+        raise Exception(f"{name} was not found.")
     
-def StartNova():
-    global NovaProcess
-    global isNovaRunning
-    isNovaRunning.value = 2
-    if NovaProcess.is_alive():
-        NovaProcess.kill()
-    NovaProcess.start()
+def StartNova(hotword):
+    global novaStatus
+    global novaThread
+    global tasks
+    global results
+    global detectHotword
+
+    detectHotword = hotword
+
+    #Reset the queues, in case there is leftover data in them
+    tasks = Queue(maxsize=0)
+    results = Queue(maxsize=0)
+
+    novaThread = threading.Thread(target=Core.StartFromAPI, args=(novaStatus, detectHotword, tasks, results,))
+    novaThread.start()
 
 def StopNova():
-    global NovaProcess
-    global isNovaRunning
-    isNovaRunning.value = 0
-    NovaProcess.terminate()
-    NovaProcess.join(timeout=1)
-    if NovaProcess.is_alive():
-        NovaProcess.kill()
+    global novaThread
+    global novaStatus
+
+    novaStatus = 0
+    tasks.put({"task": "Exit", "parameters": []})
 
 def GetStatus():
-    return isNovaRunning.value
+    return novaStatus[0]
+
+def AddToConversation(role, content):
+    tasks.put({"task": "AddToConversation", "parameters": [{"role": role, "content": content}]})
+    results.get()
+
+def GetConversation():
+    tasks.put({"task": "GetConversation", "parameters": []})
+    return results.get()
+
+def SetConversation(conversation):
+    tasks.put({"task": "SetConversation", "parameters": conversation})
+    results.get()
+
+def RunWithSpeech():
+    tasks.put({"task": "RunInferenceWithTTS", "parameters": []})
+    results.get()
+
+def Run():
+    tasks.put({"task": "RunInferenceTextOnly", "parameters": []})
+    return (results.get())
+
+def ToggleHotwordDetection(detect):
+    global detectHotword
+    detectHotword = detect
+
+def Speak(text):
+    tasks.put({"task": "Speak", "parameters": [text]})
+    results.get()

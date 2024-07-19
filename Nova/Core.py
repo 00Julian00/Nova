@@ -13,6 +13,7 @@ from Helpers import suppress_output_decorator, suppress_output
 from io import StringIO
 from contextlib import redirect_stdout, redirect_stderr
 import time
+from queue import Queue
 
 langFile = ConfigInteraction.GetLanguageFile()
 
@@ -27,6 +28,9 @@ hiddenSystemPromt = f"You keep your answers as short as possible. You always use
 
 systemPrompt = ConfigInteraction.GetSetting("Behaviour") + " " + hiddenSystemPromt
 
+useConsole = True
+runHotwordDetection = True
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 def AddToConversation(type, content, functionName, PromptLanguageModel):
@@ -40,44 +44,54 @@ def AddToConversation(type, content, functionName, PromptLanguageModel):
         conversation.append({"role": "system", "content": content})
 
     if(PromptLanguageModel):
-        CallLanguageModel()
+        CallLanguageModel("Text", True)
 
 
-def CallLanguageModel():
-    try:
-        conversationWithInfo = conversation.copy()
-        conversationWithInfo.append({"role": "system", "content": "The date is " + datetime.now().strftime("%d/%m/%Y") + " The time is " + datetime.now().strftime("%H:%M")})
-        conversationWithInfo.append({"role": "system", "content": f"The name of the user is {userName}."})
-        
+def CallLanguageModel(modality, speak):
+    conversationWithInfo = conversation.copy()
+    conversationWithInfo.append({"role": "system", "content": "The date is " + datetime.now().strftime("%d/%m/%Y") + " The time is " + datetime.now().strftime("%H:%M")})
+    conversationWithInfo.append({"role": "system", "content": f"The name of the user is {userName}."})
+    
+    if (modality == "Text"):
         if (offlineMode == "False"):
-            LLMresponse = PromptLanguageModelAPI(conversationWithInfo)
+            LLMresponse = PromptLanguageModelAPI(conversationWithInfo, speak) #If speak then stream to improve latency
         else:
             LLMresponse = PromptLanguageModelLocal(conversationWithInfo)
-
-    except Exception as e:
-        print("An error occured when communicating with the Groq API:\n" + str(e))
-        return
+    elif (modality == "Audio"):
+        pass
+    elif (modality == "Image"):
+        pass
+    elif (modality == "Video"):
+        pass
     
     processor = LLMStreamProcessor()
 
-    if (offlineMode == "False"):
+    if (offlineMode == "False" and speak):
         SpeakStream(processor.ExtractData(LLMresponse))
         response, function_calls = processor.GetData()
-    elif (offlineMode == "True"):
+    elif (offlineMode == "True" and speak):
         response = LLMresponse['choices'][0]['message']['content'].replace("assistant", "")#Temporary fix for strange model behaviour
         function_calls = []
         SpeakOffline(response)
-    else:
+    elif (offlineMode == "Mixed" and speak):
         response = LLMresponse['choices'][0]['message']['content'].replace("assistant", "")#Temporary fix for strange model behaviour
         function_calls = []
         SpeakDirect(response)
 
+    if (not speak and offlineMode == "False"): #Extract the response seperatly when not speaking the answer
+        response = LLMresponse.choices[0].message.content
+        function_calls = []
+    elif (not speak and (offlineMode == "True" or offlineMode == "Mixed")):
+        response = LLMresponse['choices'][0]['message']['content'].replace("assistant", "")#Temporary fix for strange model behaviour
+        function_calls = []
+
 
     for call in function_calls:
-        if (str(call.function.arguments) == "{}"):
-            print(langFile["Misc"][1] + " " + langFile["Status"][3] + " " + str(call.function.name) + " " + langFile["Status"][4] + "\n")
-        else:
-            print(langFile["Misc"][1] + " " + langFile["Status"][3] + " " + str(call.function.name) + " " + langFile["Status"][5] + str(call.function.arguments) + "\n")
+        if (useConsole):
+            if (str(call.function.arguments) == "{}"):
+                print(langFile["Misc"][1] + " " + langFile["Status"][3] + " " + str(call.function.name) + " " + langFile["Status"][4] + "\n")
+            else:
+                print(langFile["Misc"][1] + " " + langFile["Status"][3] + " " + str(call.function.name) + " " + langFile["Status"][5] + str(call.function.arguments) + "\n")
 
         result = ModuleManager.CallFunction(call.function.name, json.loads(call.function.arguments))
         if result == True:
@@ -88,19 +102,13 @@ def CallLanguageModel():
             AddToConversation(2, result, str(call.function.name), False)
 
     if (len(function_calls) > 0):
-        CallLanguageModel()
+        CallLanguageModel("Text", True)
     else:
-        print(langFile["Misc"][1] + " " + response + "\n")
+        if (useConsole):
+            print(langFile["Misc"][1] + " " + response + "\n")
         AddToConversation(1, response, None, False)
 
-
-def StartHotwordDetection():
-    while True:
-        transcription = DetectHotword()
-
-        if (transcription != None):
-            print(langFile["Misc"][0] + " " + transcription + "\n")
-            AddToConversation(0, transcription, None, True)
+    return response
 
 def PingGroq():
     url = "https://api.groq.com"
@@ -146,8 +154,9 @@ def PrintHeader():
 
     print("\n" + langFile["Interface"][10])
     
-def Initialize(useConsole):
-    print("> " + langFile["Status"][0])
+def Initialize():
+    if (useConsole):
+        print("> " + langFile["Status"][0])
 
     HotwordInit()
     LangInit()
@@ -167,19 +176,59 @@ def Initialize(useConsole):
             exit()
 
     AddToConversation(3, systemPrompt, None, False)
-    print("> " + langFile["Status"][12])
 
     if useConsole:
+        print("> " + langFile["Status"][12])
         ClearConsole()
         PrintHeader()
 
+def DequeueTask(task):
+    global conversation
+    
+    match task["task"]:
+        case "Exit":
+            exit()
+        case "GetConversation":
+            return conversation
+        case "AddToConversation":
+            for param in task["parameters"]:
+                conversation.append(param)
+            return None
+        case "SetConversation":
+            conversation = task["parameters"]
+            return None
+        case "RunInferenceWithTTS":
+            CallLanguageModel("Text", True)
+            return None
+        case "RunInferenceTextOnly":
+            return CallLanguageModel("Text", False)
+        case "Speak":
+            SpeakDirect(task["parameters"][0])
+    
 
-def StartFromAPI(running):
-    with suppress_output():
-        Initialize(False)
-        running.value = 1
-        StartHotwordDetection()
+def IdleLoop(tasks, results):
+    while True:
+        while not tasks.empty(): #Do everything the API has commanded to do before running another hotword check
+            results.put(DequeueTask(tasks.get()))
+        
+        if (runHotwordDetection):
+            transcription = DetectHotword()
+            if (transcription != None):
+                if (useConsole):
+                    print(langFile["Misc"][0] + " " + transcription + "\n")
+                AddToConversation(0, transcription, None, True)
+
+def StartFromAPI(novaStatus, detectHotword, taskQueue, resultQueue):
+    global useConsole
+    global runHotwordDetection
+    useConsole = False
+    runHotwordDetection = detectHotword
+    
+    novaStatus[0] = 2
+    Initialize()
+    novaStatus[0] = 1
+    IdleLoop(taskQueue, resultQueue)
 
 def Start():
-    Initialize(True)
-    StartHotwordDetection()
+    Initialize()
+    IdleLoop(Queue(maxsize=0), Queue(maxsize=0))
