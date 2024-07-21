@@ -22,3 +22,4 @@ TTS
 simpleaudio
 google-generativeai
 llama-cpp-python
+whisper-cpp-python
