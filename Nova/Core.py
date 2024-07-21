@@ -24,7 +24,12 @@ language = ConfigInteraction.GetSetting("Language")
 version = ConfigInteraction.GetManifest()["version"]
 offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
-hiddenSystemPromt = f"You keep your answers as short as possible. You always use the metric system. You use the date format dd.mm.yyyy. You only mention the date and time if specifically asked to do so. You speak in the following language: {language}. You never make up information. You never promise an alternative solution if a module fails to execute. You do not use special characters, like '-', '/' etc."
+hiddenSystemPromt = f"""You keep your answers as short as possible. You always use the metric system. You use the date format dd.mm.yyyy.
+You only mention the date and time if specifically asked to do so. You speak in the following language: {language}.
+You never make up information. You never promise an alternative solution if a module fails to execute.
+You do not use special characters, like '-', '/' etc. Your response will be read out by a text-to-speech system. For that to work,
+you use the following guidelines:.
+01.01.1970 becomes 'First of January. 19 70'. 32°C becomes '32 degrees Celcius'. 12:31 becomes '12:31 o'clock'."""
 
 systemPrompt = ConfigInteraction.GetSetting("Behaviour") + " " + hiddenSystemPromt
 
@@ -137,10 +142,12 @@ def PrintHeader():
     print(langFile["Interface"][7] + " (" + langFile["Interface"][5] + " " + version + "). " + langFile["Interface"][1] + "\n")
     print(langFile["Status"][6] + " " + ConfigInteraction.GetSetting("Behaviour"))
 
-    if (offlineMode == "True" or offlineMode == "Mixed"): #If using the local LLM, inform that modules are unavailable in the current version
-        print(langFile["Interface"][8] + " " + offlineMode + ". " + langFile["Interface"][9])
+    if (offlineMode == "True"): #If using the local LLM, inform that modules are unavailable in the current version
+        print(langFile["Interface"][8] + " offline. " + langFile["Interface"][9])
+    elif (offlineMode == "Mixed"):
+        print(langFile["Interface"][8] + " mixed. " + langFile["Interface"][9])
     else:
-        print(langFile["Interface"][8] + " " + offlineMode)
+        print(langFile["Interface"][8] + " online.")
 
     validModules, invalidModules = ModuleManager.ScanModules()
 

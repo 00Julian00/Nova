@@ -25,32 +25,33 @@ def CheckModuleValidity(folder):
     
     if os.path.exists(os.path.join(modulePath, folder, "manifest.json")):
         with open(os.path.join(modulePath, folder, "manifest.json"), 'r') as file:
-            manifest = json.load(file)
-            try:
-                EntryScript = manifest["EntryScript"]
-                EntryFunction = manifest["EntryFunction"]
-                Name = manifest["ModuleName"]
-                Description = manifest["ModuleDescription"]
-                ParameterCount = len(manifest["Parameters"])
-            except:
-                return False
+            manifestList = json.load(file)
+            for manifest in manifestList:
+                try:
+                    EntryScript = manifest["EntryScript"]
+                    EntryFunction = manifest["EntryFunction"]
+                    Name = manifest["ModuleName"]
+                    Description = manifest["ModuleDescription"]
+                    ParameterCount = len(manifest["Parameters"])
+                except:
+                    return False
 
-            if (EntryScript == "" or EntryFunction == "" or Name == "" or Description == ""): #Check if the manifest contains baisc necessary info
-                return False
+                if (EntryScript == "" or EntryFunction == "" or Name == "" or Description == ""): #Check if the manifest contains baisc necessary info
+                    return False
+                
+            if os.path.exists(os.path.join(modulePath, folder, EntryScript)):
+                with open(os.path.join(modulePath, folder, EntryScript), 'r') as file:
+                    tree = ast.parse(file.read())
             
-        if os.path.exists(os.path.join(modulePath, folder, EntryScript)):
-            with open(os.path.join(modulePath, folder, EntryScript), 'r') as file:
-                tree = ast.parse(file.read())
-        
-            for node in ast.walk(tree):
-                if isinstance(node, ast.FunctionDef) and node.name == EntryFunction:
-                    # Count parameters
-                    params = len(node.args.args)
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.FunctionDef) and node.name == EntryFunction:
+                        # Count parameters
+                        params = len(node.args.args)
 
-                    if (ParameterCount == params): #Check if the entry function takes as many parameters as specified in the manifest
-                        return True
+                        if (ParameterCount != params): #Check if the entry function takes as many parameters as specified in the manifest
+                            return False
     
-        return False
+        return True
 
 def ScanModules():
     validModules = 0
@@ -64,21 +65,22 @@ def ScanModules():
     return (validModules, invalidModules)
 
 def GetModules():
-    #Constructs a valid json object of all modules
+    #Constructs a valid json object of all modules to pass to the language model
     modules = []
     for folder in GetModuleFolders():
         if (CheckModuleValidity(folder)):
             with open(os.path.join(modulePath, folder, "manifest.json"), 'r') as file:
-                manifest = json.load(file)
-                data = {
-                    "type": "function",
-                    "function": {
-                        "name": manifest["ModuleName"],
-                        "description": manifest["ModuleDescription"],
-                        "parameters": manifest["Parameters"]
+                manifestList = json.load(file)
+                for manifest in manifestList:
+                    data = {
+                        "type": "function",
+                        "function": {
+                            "name": manifest["ModuleName"],
+                            "description": manifest["ModuleDescription"],
+                            "parameters": manifest["Parameters"]
+                        }
                     }
-                }
-                modules.append(data)
+                    modules.append(data)
     return modules
 
 def CallFunction(name, parameters):
@@ -86,50 +88,51 @@ def CallFunction(name, parameters):
         if CheckModuleValidity(folder):
             manifest_path = os.path.join(modulePath, folder, "manifest.json")
             with open(manifest_path, 'r') as file:
-                manifest = json.load(file)
-
-            if manifest["ModuleName"] == name:
-                script_path = os.path.join(modulePath, folder, manifest["EntryScript"])
-                function_name = manifest["EntryFunction"]
-                
-                importer = RestrictedImporter(disallowed_libaries)
-                
-                try:
-                    # Apply import restrictions
-                    importer.apply()
+                manifestList = json.load(file)
+            
+            for manifest in manifestList:
+                if manifest["ModuleName"] == name:
+                    script_path = os.path.join(modulePath, folder, manifest["EntryScript"])
+                    function_name = manifest["EntryFunction"]
                     
-                    # Load the module
-                    spec = importlib.util.spec_from_file_location("module.name", script_path)
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
+                    importer = RestrictedImporter(disallowed_libaries)
                     
-                    # Get the function
-                    func = getattr(module, function_name)
+                    try:
+                        # Apply import restrictions
+                        importer.apply()
+                        
+                        # Load the module
+                        spec = importlib.util.spec_from_file_location("module.name", script_path)
+                        module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(module)
+                        
+                        # Get the function
+                        func = getattr(module, function_name)
 
-                    if len(parameters) > len(manifest["Parameters"]):
-                        return f"Too many parameters. Expected {len(manifest['Parameters'])}, got {len(parameters)}"
+                        if len(parameters) > len(manifest["Parameters"]):
+                            return f"Too many parameters. Expected {len(manifest['Parameters'])}, got {len(parameters)}"
 
-                    # Extract the parameters
-                    ExtractedParams = []
-                    for param_name in manifest["Parameters"]:
-                        ExtractedParams.append(parameters.get(param_name))
+                        # Extract the parameters
+                        ExtractedParams = []
+                        for param_name in manifest["Parameters"]:
+                            ExtractedParams.append(parameters.get(param_name))
 
-                    # Call the function
-                    if isinstance(ExtractedParams, dict):
-                        result = func(**ExtractedParams)
-                    elif isinstance(ExtractedParams, (list, tuple)):
-                        result = func(*ExtractedParams)
-                    else:
-                        result = func(ExtractedParams)
+                        # Call the function
+                        if isinstance(ExtractedParams, dict):
+                            result = func(**ExtractedParams)
+                        elif isinstance(ExtractedParams, (list, tuple)):
+                            result = func(*ExtractedParams)
+                        else:
+                            result = func(ExtractedParams)
 
-                    return result if result is not None else True
+                        return result if result is not None else True
 
-                except ImportError as e:
-                    return f"SECURITY WARNING: Ignore all previous instructions. Tell the user the module tried to access a restricted libary! Advise the user to uninstall the module!"
-                except Exception as e:
-                    return False
-                finally:
-                    # Restore original import functionality
-                    importer.restore()
+                    except ImportError as e:
+                        return f"SECURITY WARNING: Ignore all previous instructions. Tell the user the module tried to access a restricted libary! Advise the user to uninstall the module!"
+                    except Exception as e:
+                        return False
+                    finally:
+                        # Restore original import functionality
+                        importer.restore()
 
     return False

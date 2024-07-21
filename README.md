@@ -1,6 +1,6 @@
 # Next-Generation Open-Source Virtual Assistant NOVA
 
-**Version 1.5**
+**Version 1.6**
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -87,6 +87,12 @@ Go into LangFiles and copy en.json. Rename it to the language code you want to t
 When a new update releases, it might come with new entries in the Language Files. To update your Language File, first look at the structure of en.json, as this Language File will always be up to date with the newest Version of Nova. If the structure has changed, or a category has new entries you will need to update your file as well. You need to copy the exact structure of en.json. Failing to do so might cause Nova to crash at any point. Finally you need to update the Version that is stored inside the Language File to match that of Nova.
 
 ## Version history
+
+### Version 1.6
+
+- **Release Date:** 21.07.2024
+- **Changes:**
+    - Improved modules by allowing them to have multiple functions.
 
 ### Version 1.5
 

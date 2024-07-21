@@ -2,7 +2,7 @@
     "name": "Modular Personal AI Assistant NOVA",
     "description": "Open source personal AI assistant that is easily expandable and customizable.",
     "author": "Julian Thomas",
-    "version": "1.5",
+    "version": "1.6",
     "license": "Apache-2.0",
     "repository": "https://github.com/00Julian00/Nova.git"
 }
