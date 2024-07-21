@@ -12,7 +12,6 @@ from llama_cpp.llama_chat_format import Llava15ChatHandler
 from pathlib import Path
 from huggingface_hub import hf_hub_download
 import PIL.ImageFile
-import cv2
 import PIL.Image
 import google.generativeai as genai
 import pathlib

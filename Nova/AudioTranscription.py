@@ -11,6 +11,14 @@ import torch
 import torchaudio
 from Helpers import suppress_output, suppress_output_decorator
 
+from whisper_cpp_python import Whisper
+import re
+import subprocess
+
+from lightning_whisper_mlx import LightningWhisperMLX
+
+whisper = LightningWhisperMLX(model="distil-large-v3", batch_size=12, quant=None)
+
 micIndex = int(ConfigInteraction.GetSetting("MicrophoneIndex"))
 hotword = ConfigInteraction.GetSetting("Hotword")
 language = ConfigInteraction.GetSetting("Language")
@@ -18,7 +26,6 @@ offlineMode = ConfigInteraction.GetSetting("OfflineMode")
 
 client = None
 model = None
-fasterWhisperModel = None
 get_speech_ts = None
 read_audio = None
 vadModel = None
@@ -27,7 +34,6 @@ vadModel = None
 def Initialize():
     global client
     global model
-    global fasterWhisperModel
     global get_speech_ts
     global read_audio
     global vadModel
@@ -37,7 +43,6 @@ def Initialize():
         model = "whisper-large-v3"
     else:
         os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'  # Required for running on Windows
-        fasterWhisperModel = WhisperModel("distil-large-v3", device="cuda", compute_type="float32")
 
     vadModel, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad', model='silero_vad', trust_repo=True)
     (get_speech_ts, _, read_audio, VADIterator, collect_chunks) = utils
@@ -61,12 +66,20 @@ def ProcessAPI(temp_file):
     return result.text
 
 def ProcessLocal(temp_file):
-    fulltext = ""
-    segments, info = fasterWhisperModel.transcribe(temp_file, beam_size=5, language="en", condition_on_previous_text=False)
-    for segment in segments:
-        fulltext += segment.text
-    return fulltext
+    text = whisper.transcribe(audio_path=temp_file)['text']
+    print("Transcription: " + text)
 
+    return text
+
+def extract_text_from_output(output):
+    # Use regex to extract only the text part from the output
+    lines = output.splitlines()
+    text = ""
+    for line in lines:
+        match = re.search(r']\s+(.*)', line)
+        if match:
+            text += match.group(1) + " "
+    return text.strip()
 
 def Listen():
     global is_recording, silence_start, audio_buffer, transcription
@@ -82,7 +95,7 @@ def Listen():
         normalized_audio = audio.astype(np.float32) / 32768.0
         rms = np.sqrt(np.mean(normalized_audio**2))
 
-        if (not is_recording and time_module.time() - startTime > 1): #Time out after 1 second to allow the API to stop the hotword detection if needed
+        if not is_recording and time_module.time() - startTime > 1:  # Timeout after 1 second
             transcription = ""
 
         # Start recording when the audio level exceeds the start threshold
@@ -103,15 +116,14 @@ def Listen():
                     temp_file = "temp_audio.wav"
                     wavfile.write(temp_file, sample_rate, audio_buffer)
 
-                    #Check if the audio contains speech
-                    if (len(get_speech_ts(read_audio(temp_file), vadModel)) > 0):
-                        if (offlineMode == "False" or offlineMode == "Mixed"):
+                    # Check if the audio contains speech
+                    if len(get_speech_ts(read_audio(temp_file), vadModel)) > 0:
+                        if offlineMode == "False" or offlineMode == "Mixed":
                             transcription = ProcessAPI(temp_file)
                         else:
                             transcription = ProcessLocal(temp_file)
                     else:
                         transcription = ""
-
 
                     os.remove(temp_file)  # Clean up temporary file
                     
@@ -121,9 +133,12 @@ def Listen():
             else:
                 silence_start = None  # Reset silence start time as there is ongoing noise
 
-    with sd.InputStream(callback=callback, dtype=np.int16, channels=1, samplerate=sample_rate, device=micIndex):
-        while transcription is None: #Wait for the audio to be processed
-            sd.sleep(1)
+    try:
+        with sd.InputStream(callback=callback, dtype=np.int16, channels=1, samplerate=sample_rate, device=micIndex):
+            while transcription is None:  # Wait for the audio to be processed
+                sd.sleep(100)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
     return transcription
 
