@@ -2,6 +2,8 @@
 
 **Version 1.6**
 
+# ⚠️The project is no longer beeing maintained due to overwhelming tech-debt. The successor project is currently in development.
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Requirements](#requirements)
