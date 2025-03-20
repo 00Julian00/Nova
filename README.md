@@ -2,7 +2,7 @@
 
 **Version 1.6**
 
-# ⚠️The project is no longer beeing maintained due to overwhelming tech-debt. The successor project is currently in development.
+# ⚠️The project is no longer beeing maintained due to overwhelming tech-debt. You can find the successor project [here](https://github.com/00Julian00/Nova2).
 
 ## Table of Contents
 - [Introduction](#introduction)
